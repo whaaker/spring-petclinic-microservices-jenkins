@@ -15,7 +15,7 @@ RUN tar -xvzf openjdk-17.0.2_linux-x64_bin.tar.gz -C /opt/java
 RUN rm openjdk-17.0.2_linux-x64_bin.tar.gz
 ENV JAVA_HOME /opt/java/jdk-17.0.2
 ENV PATH $PATH:$JAVA_HOME/bin
-RUN update-alternatives --set java ${JAVA_HOME}/bin/java
+#RUN update-alternatives --set java ${JAVA_HOME}/bin/java
 
 # Install MVN
 ## Set MVN args
