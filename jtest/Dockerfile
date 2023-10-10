@@ -11,9 +11,9 @@ ARG USER_HOME_DIR=/home/parasoft
 # Install JDK 17
 RUN mkdir -p /opt/java
 RUN curl -L -O https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz
-RUN tar -xvzf openjdk-17_linux-x64_bin.tar.gz -C /opt/java
-RUN rm openjdk-17_linux-x64_bin.tar.gz
-ENV JAVA_HOME /opt/java/jdk-17
+RUN tar -xvzf openjdk-17.0.2_linux-x64_bin.tar.gz -C /opt/java
+RUN rm openjdk-17.0.2_linux-x64_bin.tar.gz
+ENV JAVA_HOME /opt/java/jdk-17.0.2
 ENV PATH $PATH:$JAVA_HOME/bin
 RUN update-alternatives --set java ${JAVA_HOME}/bin/java
 
