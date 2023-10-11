@@ -376,6 +376,7 @@ pipeline {
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
+                    **/target/**/*.jar, 
                     **/target/jtest/sa/**, 
                     **/target/jtest/ut/**, 
                     **/target/jtest/monitor/**, 
