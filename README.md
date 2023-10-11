@@ -1,5 +1,5 @@
 # spring-petclinic-microservices-jenkins
-##Spring PetClinic Microservices Jenkins Pipeline (AWS EC2, docker)
+## Spring PetClinic Microservices Jenkins Pipeline (AWS EC2, docker)
 This repository is a working demonstration of Parasoft's Continuous Quality Platform integrated with the Spring PetClinic Microservices demo application.  The Jenkins Pipelines defined in this repository are fully portable, meaning your Jenkins server only requires:
 - A connection to the Internet
 - Docker installed on the Jenkins machine
