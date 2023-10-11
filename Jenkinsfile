@@ -268,9 +268,15 @@ pipeline {
                 // Setup workspace and soatestcli.properties file
                 sh  '''
                     # TODO: The following examples (integrated with CTP REST API):
-                    #   - Maven failsafe, TestNG, Selenium external test project running as a packaged jar (or from sources) [Upgrade, CIBC]
-                    #   - Maven failsafe, JUnit, springboottest, running in same JVM as sources (jar file only) [Boeing case]
-                    #   - SOAtest web functional test (from docker image with browser installed), calling CTP REST APIs as Setup/Teardown [GUI commercial tool case]
+                    #   - [High-code, open source tool use case]
+                    #        - Upgrade, CIBC, Bank of America
+                    #        - Maven fail-safe, TestNG, Selenium
+                    #        - 'main' sources & 'test' sources are separate repositories
+                    #        - Docker image with Java, Maven, Selenium, and Chrome setup to execute functional tests
+                    #   - [GUI commercial tool case]
+                    #        - SOAtest web functional test
+                    #        - Calling CTP REST APIs as Setup/Teardown
+                    #        - Using docker image with browser installed
                     '''
                 
                 // echo '---> Parsing 9.x soatest reports'
