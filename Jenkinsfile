@@ -4,7 +4,7 @@ pipeline {
         // App Settings
         project_name="PetClinic-Jenkins" //DTP Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
-        app_short="PC" //parabank
+        app_short="PC" //petclinic
 
         //TODO
         app_name="petclinic-baseline" //docker container
@@ -61,6 +61,15 @@ pipeline {
                     # Debugging
                     pwd;
                     tree .;
+
+                    # add agent.jar into all microservices projects
+                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-api-gateway/src/test/resources/coverage/agent.jar;
+                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-customers-service/src/test/resources/coverage/agent.jar;
+                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-vets-service/src/test/resources/coverage/agent.jar;
+                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-visits-service/src/test/resources/coverage/agent.jar;
+
+                    # Debugging
+                    tree ./petclinic;
                     '''
 
                 // Prepare the jtestcli.properties file
@@ -234,25 +243,8 @@ pipeline {
             steps {
                 // deploy the project
                 sh  '''
-                    # Run Parabank-baseline docker image with Jtest coverage agent configured
-                    docker run \
-                    -d \
-                    -u ${jenkins_uid}:${jenkins_gid} \
-                    -p ${app_port}:8080 \
-                    -p ${app_cov_port}:8050 \
-                    -p ${app_db_port}:9001 \
-                    -p ${app_jms_port}:61616 \
-                    --env-file "$PWD/petclinic-jenkins/jtest/monitor.env" \
-                    -v "$PWD/monitor:/home/docker/jtest/monitor" \
-                    --network=demo-net \
-                    --name ${app_name} \
-                    $(docker build -q ./petclinic-jenkins/petclinic-docker)
-
-                    # Health Check
-                    sleep 15
-                    docker ps -f name=${app_name}
-                    curl -iv --raw http://localhost:${app_port}/parabank
-                    curl -iv --raw http://localhost:${app_cov_port}/status
+                    # Run PetClinic with Jtest coverage agent configured
+                    #./petclinic/mvnw spring-boot:run;
                     '''
             }
         }
@@ -261,100 +253,30 @@ pipeline {
             steps {
                 // Setup workspace and soatestcli.properties file
                 sh  '''
-                    # Set Up and write .properties file
-                    echo $"
-                    parasoft.eula.accepted=true
-
-                    license.network.use.specified.server=true
-                    license.network.url=${ls_url}
-                    license.network.auth.enabled=true
-                    license.network.user=${ls_user}
-                    license.network.password=${ls_pass}
-                    soatest.license.use_network=true
-                    soatest.license.network.edition=custom_edition
-                    soatest.license.custom_edition_features=RuleWizard, Command Line, SOA, Web, Server API Enabled, Message Packs, Advanced Test Generation Desktop, Requirements Traceability, API Security Testing
-                    
-                    dtp.enabled=true
-                    dtp.url=${dtp_url}
-                    dtp.user=${dtp_user}
-                    dtp.password=${dtp_pass}
-                    dtp.project=${project_name}
-
-                    build.id=${buildId}
-                    session.tag=${soatestSessionTag}
-
-                    report.dtp.publish=${dtp_publish}
-                    report.associations=true
-                    report.scontrol=full
-                    scope.local=true
-                    scope.scontrol=true
-                    scope.xmlmap=false
-
-                    application.coverage.enabled=true
-                    application.coverage.agent.url=http\\://${host_ip}\\:${app_cov_port}
-                    application.coverage.images=${soatestCovImage}
-
-                    scontrol.git.exec=git
-                    scontrol.rep1.git.branch=main
-                    scontrol.rep1.git.url=${project_repo}
-                    scontrol.rep1.type=git
-                    " > ./petclinic-jenkins/soatest/soatestcli.properties
+                    # TODO: The following examples:
+                    #   - Maven failsafe, TestNG, Selenium or Playwright external test project running as a packaged jar (or from sources) [Upgrade, CIBC, Bank of America]
+                    #   - Maven failsafe, JUnit, springboottest, running in same JVM as sources (jar file only) [Boeing case]
+                    #   - SOAtest web functional test (from docker image with browser installed), calling CTP REST APIs as Setup/Teardown [GUI commercial tool case]
                     '''
                 
-                // Run SOAtestCLI from docker
-                sh  '''
-                    docker run \
-                    -u ${jenkins_uid}:${jenkins_gid} \
-                    --rm -i \
-                    --name soatest \
-                    -e ACCEPT_EULA=true \
-                    -v "$PWD/petclinic-jenkins/soatest:/usr/local/parasoft/soatest" \
-                    -w "/usr/local/parasoft" \
-                    --network=demo-net \
-                    $(docker build -q ./petclinic-jenkins/soatest) /bin/bash -c " \
-
-                    # Create workspace directory and copy SOAtest project into it
-                    mkdir -p ./soavirt_workspace/SOAtestProject/coverage_runtime_dir; \
-                    cp -f -R ./soatest/SOAtestProject ./soavirt_workspace; \
-
-                    cd soavirt; \
-
-                    # SOAtest requires a project to be "imported" before you can run it
-                    ./soatestcli \
-                    -data /usr/local/parasoft/soavirt_workspace \
-                    -settings /usr/local/parasoft/soatest/soatestcli.properties \
-                    -import /usr/local/parasoft/soavirt_workspace/SOAtestProject/.project; \
-                    
-                    # Execute the project with SOAtest CLI
-                    ./soatestcli \
-                    -data /usr/local/parasoft/soavirt_workspace \
-                    -resource /SOAtestProject \
-                    -environment '172.17.0.1' \
-                    -config '${soatestConfig}' \
-                    -settings /usr/local/parasoft/soatest/soatestcli.properties \
-                    -property application.coverage.runtime.dir=/usr/local/parasoft/soavirt_workspace/SOAtestProject/coverage_runtime_dir \
-                    -report /usr/local/parasoft/soatest/report \
-                    "
-                    '''
-                
-                echo '---> Parsing 9.x soatest reports'
-                script {
-                    step([$class: 'XUnitPublisher', 
-                        // thresholds: [failed(
-                        //     failureNewThreshold: '10', 
-                        //     failureThreshold: '10',
-                        //     unstableNewThreshold: '20', 
-                        //     unstableThreshold: '20')
-                        // ],
-                        tools: [[$class: 'ParasoftSOAtest9xType', 
-                            deleteOutputFiles: true, 
-                            failIfNotNew: false, 
-                            pattern: '**/soatest/report/*.xml', 
-                            skipNoTestFiles: true, 
-                            stopProcessingIfError: false
-                        ]]
-                    ])
-                }
+                // echo '---> Parsing 9.x soatest reports'
+                // script {
+                //     step([$class: 'XUnitPublisher', 
+                //         // thresholds: [failed(
+                //         //     failureNewThreshold: '10', 
+                //         //     failureThreshold: '10',
+                //         //     unstableNewThreshold: '20', 
+                //         //     unstableThreshold: '20')
+                //         // ],
+                //         tools: [[$class: 'ParasoftSOAtest9xType', 
+                //             deleteOutputFiles: true, 
+                //             failIfNotNew: false, 
+                //             pattern: '**/soatest/report/*.xml', 
+                //             skipNoTestFiles: true, 
+                //             stopProcessingIfError: false
+                //         ]]
+                //     ])
+                // }
             }
         }
         stage('Release') {
@@ -370,9 +292,9 @@ pipeline {
     post {
         // Clean after build
         always {
-            sh 'docker container stop ${app_name}'
-            sh 'docker container rm ${app_name}'
-            sh 'docker image prune -f'
+            //sh 'docker container stop ${app_name}'
+            //sh 'docker container rm ${app_name}'
+            //sh 'docker image prune -f'
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
