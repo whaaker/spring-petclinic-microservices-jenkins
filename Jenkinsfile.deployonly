@@ -163,6 +163,7 @@ pipeline {
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
+                    **/target/**/*.jar, 
                     **/target/jtest/monitor/**''',
                 fingerprint: true, 
                 onlyIfSuccessful: true,

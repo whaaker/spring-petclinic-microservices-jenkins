@@ -414,8 +414,8 @@ pipeline {
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
                     **/target/**/*.jar, 
-                    **/target/jtest/sa/**, 
-                    **/target/jtest/ut/**, 
+                    **/target/jtest/sast/**, 
+                    **/target/dependency-check-report.*, 
                     **/target/jtest/monitor/**, 
                     **/soatest/report/**''',
                 fingerprint: true, 
