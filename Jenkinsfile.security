@@ -381,8 +381,8 @@ pipeline {
             steps {
                 // Setup workspace and soatestcli.properties file
                 sh  '''
-                    # TODO: The following examples:
-                    #   - Maven failsafe, TestNG, Selenium or Playwright external test project running as a packaged jar (or from sources) [Upgrade, CIBC, Bank of America]
+                    # TODO: The following examples (integrated with CTP REST API):
+                    #   - Maven failsafe, TestNG, Selenium external test project running as a packaged jar (or from sources) [Upgrade, CIBC]
                     #   - Maven failsafe, JUnit, springboottest, running in same JVM as sources (jar file only) [Boeing case]
                     #   - SOAtest web functional test (from docker image with browser installed), calling CTP REST APIs as Setup/Teardown [GUI commercial tool case]
                     '''
