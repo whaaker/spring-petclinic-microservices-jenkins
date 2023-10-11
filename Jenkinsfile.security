@@ -399,7 +399,7 @@ pipeline {
                 sh  '''
                         
                 # Clean up
-                docker container stop ${app_name}
+                #docker container stop ${app_name}
                     
                 '''
             }
@@ -408,8 +408,8 @@ pipeline {
     post {
         // Clean after build
         always {
-            sh 'docker container rm ${app_name}'
-            sh 'docker image prune -f'
+            //sh 'docker container rm ${app_name}'
+            //sh 'docker image prune -f'
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
