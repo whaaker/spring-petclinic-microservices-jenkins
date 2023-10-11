@@ -246,6 +246,20 @@ pipeline {
                     # Run PetClinic with Jtest coverage agent configured
                     #./petclinic/mvnw spring-boot:run;
                     '''
+
+                // Health check coverage agents
+                sh '''
+                    # TODO
+                    '''
+
+                // update CTP with yaml script upload
+                sh '''
+                    # Set Up and write .properties file
+                    # TODO
+
+                    # upload yaml file to CTP
+                    # TODO
+                    '''
             }
         }
                 

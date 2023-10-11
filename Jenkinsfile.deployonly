@@ -94,11 +94,9 @@ pipeline {
                     --name jtest \
                     -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
                     -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                    -w "/home/parasoft/jenkins" \
+                    -w "/home/parasoft/jenkins/petclinic" \
                     --network=demo-net \
                     $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
-                    
-                    cd petclinic; \
 
                     # Package the application with the Jtest Monitor
                     mvn package jtest:monitor \
@@ -125,25 +123,22 @@ pipeline {
             steps {
                 // deploy the project
                 sh  '''
-                    # Run Parabank-baseline docker image with Jtest coverage agent configured
-                    docker run \
-                    -d \
-                    -u ${jenkins_uid}:${jenkins_gid} \
-                    -p ${app_port}:8080 \
-                    -p ${app_cov_port}:8050 \
-                    -p ${app_db_port}:9001 \
-                    -p ${app_jms_port}:61616 \
-                    --env-file "$PWD/petclinic-jenkins/jtest/monitor.env" \
-                    -v "$PWD/monitor:/home/docker/jtest/monitor" \
-                    --network=demo-net \
-                    --name ${app_name} \
-                    $(docker build -q ./petclinic-jenkins/petclinic-docker)
+                    # Run PetClinic with Jtest coverage agent configured
+                    #./petclinic/mvnw spring-boot:run;
+                    '''
 
-                    # Health Check
-                    sleep 15
-                    docker ps -f name=${app_name}
-                    curl -iv --raw http://localhost:${app_port}/parabank
-                    curl -iv --raw http://localhost:${app_cov_port}/status
+                // Health check coverage agents
+                sh '''
+                    # TODO
+                    '''
+
+                // update CTP with yaml script upload
+                sh '''
+                    # Set Up and write .properties file
+                    # TODO
+
+                    # upload yaml file to CTP
+                    # TODO
                     '''
             }
         }
@@ -157,9 +152,9 @@ pipeline {
     post {
         // Clean after build
         always {
-            sh 'docker container stop ${app_name}'
-            sh 'docker container rm ${app_name}'
-            sh 'docker image prune -f'
+            //sh 'docker container stop ${app_name}'
+            //sh 'docker container rm ${app_name}'
+            //sh 'docker image prune -f'
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
