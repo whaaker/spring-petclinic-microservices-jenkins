@@ -136,6 +136,22 @@ pipeline {
                     -Dproperty.report.dtp.publish=${dtp_publish}; \
                     "
                     '''
+                echo '---> Parsing 10.x static analysis reports'
+                recordIssues(
+                    tools: [parasoftFindings(
+                        localSettingsPath: '$PWD/petclinic-jenkins/jtest/jtestcli.properties',
+                        pattern: '**/target/jtest/sa/*.xml'
+                    )],
+                    unhealthy: 100, // Adjust as needed
+                    healthy: 50,   // Adjust as needed
+                    minimumSeverity: 'HIGH', // Adjust as needed
+                    // qualityGates: [[
+                    //     threshold: 10,
+                    //     type: 'TOTAL_ERROR',
+                    //     unstable: true
+                    // ]],
+                    skipPublishingChecks: true // Adjust as needed
+                )
             }
         }
         stage('Unit Test') {
@@ -172,6 +188,22 @@ pipeline {
                     -Dproperty.report.dtp.publish=${dtp_publish}; \
                     "
                     '''
+                echo '---> Parsing 10.x unit test reports'
+                script {
+                    step([$class: 'XUnitPublisher', 
+                        // thresholds: [failed(
+                        //     failureNewThreshold: '0', 
+                        //     failureThreshold: '0')
+                        // ],
+                        tools: [[$class: 'ParasoftType', 
+                            deleteOutputFiles: true, 
+                            failIfNotNew: false, 
+                            pattern: '**/target/jtest/ut/*.xml', 
+                            skipNoTestFiles: true, 
+                            stopProcessingIfError: false
+                        ]]
+                    ])
+                }
             }
         }
         stage('Package-CodeCoverage') {
@@ -212,49 +244,6 @@ pipeline {
                     #ls -ll
                     #ls -la monitor
                     '''
-            }
-        }
-        // TODO: refactor like I did for parabank-jenkins
-        stage('Process Reports') {
-            when {
-                expression {
-                    return false;
-                }
-            }
-            steps {
-                echo '---> Parsing 10.x static analysis reports'
-                recordIssues(
-                    tools: [parasoftFindings(
-                        localSettingsPath: '$PWD/petclinic-jenkins/jtest/jtestcli.properties',
-                        pattern: '**/target/jtest/sa/*.xml'
-                    )],
-                    unhealthy: 100, // Adjust as needed
-                    healthy: 50,   // Adjust as needed
-                    minimumSeverity: 'HIGH', // Adjust as needed
-                    // qualityGates: [[
-                    //     threshold: 10,
-                    //     type: 'TOTAL_ERROR',
-                    //     unstable: true
-                    // ]],
-                    skipPublishingChecks: true // Adjust as needed
-                )
-
-                echo '---> Parsing 10.x unit test reports'
-                script {
-                    step([$class: 'XUnitPublisher', 
-                        // thresholds: [failed(
-                        //     failureNewThreshold: '0', 
-                        //     failureThreshold: '0')
-                        // ],
-                        tools: [[$class: 'ParasoftType', 
-                            deleteOutputFiles: true, 
-                            failIfNotNew: false, 
-                            pattern: '**/target/jtest/ut/*.xml', 
-                            skipNoTestFiles: true, 
-                            stopProcessingIfError: false
-                        ]]
-                    ])
-                }
             }
         }
         stage('Deploy-CodeCoverage') {

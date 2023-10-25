@@ -50,10 +50,9 @@ services:
      - 8052:8052 # cov agent
     volumes:
       - type: bind
-        source: ../../petclinic/spring-petclinic-visits-service/src/test/resources/coverage
+        source: '/var/lib/jenkins/workspace/Testing Jobs/PetClinic-Jenkins (main branch)/petclinic/spring-petclinic-visits-service/src/test/resources/coverage'
         target: /tmp/coverage
     entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "org.springframework.boot.loader.JarLauncher"]
-
   vets-service:
     user: root:root
     image: springcommunity/spring-petclinic-vets-service
@@ -68,7 +67,7 @@ services:
      - 8053:8053 # cov agent
     volumes:
       - type: bind
-        source: ../../petclinic/spring-petclinic-vets-service/src/test/resources/coverage
+        source: '/var/lib/jenkins/workspace/Testing Jobs/PetClinic-Jenkins (main branch)/petclinic/spring-petclinic-vets-service/src/test/resources/coverage'
         target: /tmp/coverage
 
   api-gateway:
