@@ -105,6 +105,11 @@ pipeline {
             }
         }
         stage('Quality Scan') {
+            when {
+                expression {
+                    return false;
+                }
+            }
             steps {
                 // Execute the build with Jtest Maven plugin in docker
                 sh '''
@@ -134,6 +139,11 @@ pipeline {
             }
         }
         stage('Unit Test') {
+            when {
+                expression {
+                    return false;
+                }
+            }
             steps {
                 // Execute the build with Jtest Maven plugin in docker
                 sh '''
@@ -165,6 +175,11 @@ pipeline {
             }
         }
         stage('Package-CodeCoverage') {
+            when {
+                expression {
+                    return true;
+                }
+            }
             steps {
                 // Execute the build with Jtest Maven plugin in docker
                 sh '''
@@ -199,7 +214,13 @@ pipeline {
                     '''
             }
         }
+        // TODO: refactor like I did for parabank-jenkins
         stage('Process Reports') {
+            when {
+                expression {
+                    return false;
+                }
+            }
             steps {
                 echo '---> Parsing 10.x static analysis reports'
                 recordIssues(
@@ -237,16 +258,21 @@ pipeline {
             }
         }
         stage('Deploy-CodeCoverage') {
+            when {
+                expression {
+                    return true;
+                }
+            }
             steps {
-                // deploy the project
-                sh  '''
-                    # Run PetClinic with Jtest coverage agent configured
-                    #./petclinic/mvnw spring-boot:run;
+                // check running containers and deploy
+                sh '''
+                    cd ./petclinic-jenkins/petclinic-docker;
+                    docker-compose down || true
+                    docker-compose -f ./docker-compose-coverage.yml up -d
                     '''
-
                 // Health check coverage agents
                 sh '''
-                    # TODO
+
                     '''
 
                 // update CTP with yaml script upload
@@ -261,6 +287,11 @@ pipeline {
         }
                 
         stage('Functional Test') {
+            when {
+                expression {
+                    return false;
+                }
+            }
             steps {
                 // Setup workspace and soatestcli.properties file
                 sh  '''
