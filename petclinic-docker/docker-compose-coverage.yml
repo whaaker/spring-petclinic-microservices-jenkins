@@ -46,7 +46,7 @@ services:
 #    environment:
 #      JAVA_OPTS: '-javaagent:/tmp/coverage/agent.jar=settings=/tmp/coverage/agent.properties,runtimeData=/tmp/coverage/runtime_coverage'
     ports:
-     - 8082:8082
+     - 8882:8082
      - 8052:8052 # cov agent
     volumes:
       - type: bind
