@@ -1,5 +1,5 @@
 # baseline image
-FROM parasoft/jtest
+FROM parasoft/jtest:2023.1.2
 
 ARG HOST_UID=995
 ARG HOST_GID=991

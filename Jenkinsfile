@@ -267,7 +267,7 @@ pipeline {
                 // check running containers and deploy
                 sh '''
                     cd ./petclinic-jenkins/petclinic-docker;
-                    docker-compose down || true
+                    docker-compose -f ./docker-compose-coverage.yml down || true
                     docker-compose -f ./docker-compose-coverage.yml up -d
                     '''
                 // Health check coverage agents
