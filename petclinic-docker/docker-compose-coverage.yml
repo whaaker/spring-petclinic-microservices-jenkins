@@ -31,7 +31,7 @@ services:
     - 8051:8051
     volumes:
       - type: bind
-        source: ../../petclinic/spring-petclinic-customers-service/src/test/resources/coverage
+        source: '/var/lib/jenkins/workspace/Testing Jobs/PetClinic-Jenkins (main branch)/petclinic/spring-petclinic-customers-service/src/test/resources/coverage'
         target: /tmp/coverage
   visits-service:
     image: springcommunity/spring-petclinic-visits-service
