@@ -52,7 +52,7 @@ services:
       - type: bind
         source: ../../petclinic/spring-petclinic-visits-service/src/test/resources/coverage
         target: /tmp/coverage
-    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "${COV_AGENT_ARGS},port=8052", "org.springframework.boot.loader.JarLauncher"]
+    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "org.springframework.boot.loader.JarLauncher"]
 
   vets-service:
     user: root:root
