@@ -256,8 +256,7 @@ pipeline {
                 // check running containers and deploy
                 sh '''
                     pwd;
-                    cd petclinic/spring-petclinic-visits-service/src/test/resources/coverage;
-                    ls -ll;
+                    ls -ll petclinic/spring-petclinic-visits-service/src/test/resources/coverage;
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml up -d;
                     '''
