@@ -34,7 +34,7 @@ services:
   visits-service:
     image: springcommunity/spring-petclinic-visits-service
     container_name: visits-service
-    user: 0:0
+    user: 995:991
     mem_limit: 512M
     depends_on:
      - config-server
