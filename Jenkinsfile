@@ -73,7 +73,7 @@ pipeline {
                 // add agent.jar into all microservices projects
                 script {
                     for (dir in SERVICES_ARRAY) {
-                        sh 'cp jtest_agent/agent.jar ${dir}/src/test/resources/coverage/agent.jar'
+                        sh 'cp jtest_agent/agent.jar ./petclinic/${dir}/src/test/resources/coverage/agent.jar'
                     }
                 }
 
