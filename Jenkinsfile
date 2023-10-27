@@ -20,7 +20,7 @@ pipeline {
         // Parasoft Common Settings
         ctp_url="${PARASOFT_CTP_URL}" //https://[ip from thanos VM]:8080
         ctp_user="${PARASOFT_CTP_USER}" //admin
-        ctp_pass="${PARAOSFT_CTP_PASS}"
+        ctp_pass="${PARASOFT_CTP_PASS}"
         dtp_url="${PARASOFT_DTP_URL}" //https://dtp:8443
         dtp_user="${PARASOFT_DTP_USER}" //admin
         dtp_pass="${PARASOFT_DTP_PASS}"
