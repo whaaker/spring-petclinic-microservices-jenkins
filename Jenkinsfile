@@ -1,3 +1,5 @@
+def SERVICES_ARRAY
+
 pipeline {
     agent any
     environment {
@@ -5,15 +7,6 @@ pipeline {
         project_name="PetClinic-Jenkins" //DTP Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
         app_short="PC" //petclinic
-
-        //TODO
-        app_name="petclinic-baseline" //docker container
-        image="parasoft/parabank:baseline" //docker image
-        app_port=8090
-        app_cov_port=8050
-        app_db_port=9021
-        app_jms_port=63616
-        //TODO
 
         // Jenkins UID:GID
         jenkins_uid=995
@@ -25,6 +18,9 @@ pipeline {
         ls_pass="${PARASOFT_LS_PASS}"
         
         // Parasoft Common Settings
+        ctp_url="${PARASOFT_CTP_URL}" //https://[ip from thanos VM]:8080
+        ctp_user="${PARASOFT_CTP_USER}" //admin
+        ctp_pass="${PARAOSFT_CTP_PASS}"
         dtp_url="${PARASOFT_DTP_URL}" //https://dtp:8443
         dtp_user="${PARASOFT_DTP_USER}" //admin
         dtp_pass="${PARASOFT_DTP_PASS}"
@@ -45,7 +41,17 @@ pipeline {
         stage('Setup') {
             steps {
                 deleteDir()
-                                
+
+                // App Deployment
+                script {
+                    SERVICES_ARRAY = [
+                        "spring-petclinic-api-gateway", 
+                        "spring-petclinic-vets-service", 
+                        "spring-petclinic-visits-service", 
+                        "spring-petclinic-customers-service"
+                    ]
+                }
+
                 // setup the workspace
                 sh  '''
                     # Clone this repository & PetClinic repository into the workspace
@@ -55,19 +61,24 @@ pipeline {
                     mkdir petclinic;
                     git clone ${project_repo} petclinic;
 
+                    # Download coverage package
+                    curl -LO -u ${ctp_user}:${ctp_pass} ${ctp_url}/em/coverageagent/java_agent_coverage.zip
+                    unzip java_agent_coverage.zip
+
                     # Debugging
                     pwd;
                     tree .;
+                '''
 
-                    # add agent.jar into all microservices projects
-                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-api-gateway/src/test/resources/coverage/agent.jar;
-                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-customers-service/src/test/resources/coverage/agent.jar;
-                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-vets-service/src/test/resources/coverage/agent.jar;
-                    cp ./petclinic-jenkins/jtest/agent.jar ./petclinic/spring-petclinic-visits-service/src/test/resources/coverage/agent.jar;
+                // add agent.jar into all microservices projects
+                script {
+                    for (dir in SERVICES_ARRAY) {
+                        sh 'cp jtest_agent/agent.jar ${dir}/src/test/resources/coverage/agent.jar'
+                    }
+                }
 
-                    # Debugging
-                    tree ./petclinic;
-                    '''
+                // Debugging
+                sh 'tree ./petclinic'
 
                 // Prepare the jtestcli.properties file
                 sh '''
@@ -209,7 +220,7 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -249,7 +260,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
