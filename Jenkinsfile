@@ -61,9 +61,9 @@ pipeline {
 
                 // add agent.jar into all microservices projects
                 script {
-                    def servicesArray = ${services_list}.split(',')
+                    def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
-                        sh 'cp jtest_agent/agent.jar ./petclinic/${dir}/src/test/resources/coverage/agent.jar'
+                        sh "cp jtest_agent/agent.jar ./petclinic/${dir}/src/test/resources/coverage/agent.jar"
                     }
                 }
 
