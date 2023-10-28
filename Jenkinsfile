@@ -1,5 +1,3 @@
-def SERVICES_ARRAY
-
 pipeline {
     agent any
     environment {
@@ -7,6 +5,13 @@ pipeline {
         project_name="PetClinic-Jenkins" //DTP Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
         app_short="PC" //petclinic
+
+        SERVICES_ARRAY = [
+            "spring-petclinic-api-gateway", 
+            "spring-petclinic-vets-service", 
+            "spring-petclinic-visits-service", 
+            "spring-petclinic-customers-service"
+        ];
 
         // Jenkins UID:GID
         jenkins_uid=995
@@ -62,13 +67,6 @@ pipeline {
 
                 // add agent.jar into all microservices projects
                 script {
-                    SERVICES_ARRAY = [
-                        "spring-petclinic-api-gateway", 
-                        "spring-petclinic-vets-service", 
-                        "spring-petclinic-visits-service", 
-                        "spring-petclinic-customers-service"
-                    ];
-
                     for (def dir in SERVICES_ARRAY) {
                         sh 'cp jtest_agent/agent.jar ./petclinic/${dir}/src/test/resources/coverage/agent.jar'
                     }
