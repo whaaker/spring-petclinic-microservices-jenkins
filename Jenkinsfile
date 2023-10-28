@@ -264,7 +264,7 @@ pipeline {
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml up -d;
                     sleep 80s;
 
-                    curl -iv --raw https://localhost:8050/status
+                    curl -iv --raw http://localhost:8050/status
                     '''
                 // Health check coverage agents
                 sh '''
