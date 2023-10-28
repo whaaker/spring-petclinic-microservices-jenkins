@@ -264,11 +264,14 @@ pipeline {
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml up -d;
                     sleep 80s;
 
-                    curl -iv --raw http://localhost:8050/status
+                    
                     '''
                 // Health check coverage agents
                 sh '''
-
+                    curl -iv --raw http://localhost:8050/status
+                    curl -iv --raw http://localhost:8051/status
+                    curl -iv --raw http://localhost:8052/status
+                    curl -iv --raw http://localhost:8053/status
                     '''
 
                 // update CTP with yaml script upload
@@ -336,9 +339,12 @@ pipeline {
     post {
         // Clean after build
         always {
-            //sh 'docker container stop ${app_name}'
-            //sh 'docker container rm ${app_name}'
-            //sh 'docker image prune -f'
+            sh '''
+                docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
+                sleep 10s;
+                docker container prune -f;
+                docker image prune -f;
+            '''
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
