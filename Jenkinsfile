@@ -5,7 +5,11 @@ pipeline {
         project_name="PetClinic-Jenkins" //DTP Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
         app_short="PC" //petclinic
-        services_list = "spring-petclinic-api-gateway,spring-petclinic-vets-service,spring-petclinic-visits-service,spring-petclinic-customers-service"
+        services_list = """
+            spring-petclinic-api-gateway,
+            spring-petclinic-vets-service,
+            spring-petclinic-visits-service,
+            spring-petclinic-customers-service"""
 
         // Jenkins UID:GID
         jenkins_uid=995
@@ -210,7 +214,7 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -242,15 +246,15 @@ pipeline {
                     # Unzip monitor.zip
                     mkdir monitor
                     unzip -q ./petclinic/target/jtest/monitor/monitor.zip -d .
-                    #ls -ll
-                    #ls -la monitor
+                    ls -ll
+                    ls -ll monitor
                     '''
             }
         }
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -259,7 +263,12 @@ pipeline {
                     pwd;
                     ls -ll petclinic/spring-petclinic-visits-service/src/test/resources/coverage;
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
+                    sleep 10s;
+                    
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml up -d;
+                    sleep 80s;
+
+                    curl -iv --raw https://localhost:8050/status
                     '''
                 // Health check coverage agents
                 sh '''

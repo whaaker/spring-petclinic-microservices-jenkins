@@ -7,6 +7,7 @@ services:
     mem_limit: 512M
     ports:
      - 8888:8888
+  
   discovery-server:
     image: springcommunity/spring-petclinic-discovery-server
     container_name: discovery-server
@@ -16,6 +17,7 @@ services:
     entrypoint: ["./dockerize","-wait=tcp://config-server:8888","-timeout=60s","--","java", "org.springframework.boot.loader.JarLauncher"]
     ports:
      - 8761:8761
+  
   customers-service:
     image: springcommunity/spring-petclinic-customers-service
     container_name: customers-service
@@ -29,12 +31,13 @@ services:
     - 8051:8051
     volumes:
       - type: bind
-        source: '/var/lib/jenkins/workspace/Testing Jobs/PetClinic-Jenkins (main branch)/petclinic/spring-petclinic-customers-service/src/test/resources/coverage'
+        source: ../../petclinic/spring-petclinic-customers-service/src/test/resources/coverage
         target: /tmp/coverage
+  
   visits-service:
     image: springcommunity/spring-petclinic-visits-service
     container_name: visits-service
-    user: 995:991
+    user: 0:0
     mem_limit: 512M
     depends_on:
      - config-server
@@ -48,9 +51,10 @@ services:
      - 8052:8052 # cov agent
     volumes:
       - type: bind
-        source: '../../../petclinic/spring-petclinic-visits-service/src/test/resources/coverage'
+        source: ../../petclinic/spring-petclinic-visits-service/src/test/resources/coverage
         target: /tmp/coverage
-    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "org.springframework.boot.loader.JarLauncher"]
+    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "${COV_AGENT_ARGS},port=8052", "org.springframework.boot.loader.JarLauncher"]
+  
   vets-service:
     user: root:root
     image: springcommunity/spring-petclinic-vets-service
@@ -59,14 +63,15 @@ services:
     depends_on:
      - config-server
      - discovery-server
-    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "${COV_AGENT_ARGS},port=8053", "org.springframework.boot.loader.JarLauncher"]
     ports:
      - 8083:8083
      - 8053:8053 # cov agent
     volumes:
       - type: bind
-        source: '/var/lib/jenkins/workspace/Testing Jobs/PetClinic-Jenkins (main branch)/petclinic/spring-petclinic-vets-service/src/test/resources/coverage'
+        source: ../../petclinic/spring-petclinic-vets-service/src/test/resources/coverage
         target: /tmp/coverage
+    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "${COV_AGENT_ARGS},port=8053", "org.springframework.boot.loader.JarLauncher"]
+
   api-gateway:
     image: springcommunity/spring-petclinic-api-gateway
     container_name: api-gateway
@@ -74,9 +79,15 @@ services:
     depends_on:
      - config-server
      - discovery-server
-    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "org.springframework.boot.loader.JarLauncher"]
     ports:
      - 8099:8080
+     - 8050:8050 # cov agent
+    volumes:
+      - type: bind
+        source: ../../petclinic/spring-petclinic-vets-service/src/test/resources/coverage
+        target: /tmp/coverage
+    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "${COV_AGENT_ARGS},port=8050", "org.springframework.boot.loader.JarLauncher"]
+
   tracing-server:
     image: openzipkin/zipkin
     container_name: tracing-server
@@ -85,6 +96,7 @@ services:
     - JAVA_OPTS=-XX:+UnlockExperimentalVMOptions -Djava.security.egd=file:/dev/./urandom
     ports:
      - 9411:9411
+  
   admin-server:
     image: springcommunity/spring-petclinic-admin-server
     container_name: admin-server
