@@ -5,11 +5,7 @@ pipeline {
         project_name="PetClinic-Jenkins" //DTP Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
         app_short="PC" //petclinic
-        services_list = """
-            spring-petclinic-api-gateway,
-            spring-petclinic-vets-service,
-            spring-petclinic-visits-service,
-            spring-petclinic-customers-service"""
+        services_list = "spring-petclinic-api-gateway,spring-petclinic-vets-service,spring-petclinic-visits-service,spring-petclinic-customers-service"
 
         // Jenkins UID:GID
         jenkins_uid=995
