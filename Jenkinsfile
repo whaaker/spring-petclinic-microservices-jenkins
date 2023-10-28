@@ -42,16 +42,6 @@ pipeline {
             steps {
                 deleteDir()
 
-                // App Deployment
-                script {
-                    SERVICES_ARRAY = [
-                        "spring-petclinic-api-gateway", 
-                        "spring-petclinic-vets-service", 
-                        "spring-petclinic-visits-service", 
-                        "spring-petclinic-customers-service"
-                    ]
-                }
-
                 // setup the workspace
                 sh  '''
                     # Clone this repository & PetClinic repository into the workspace
@@ -72,7 +62,14 @@ pipeline {
 
                 // add agent.jar into all microservices projects
                 script {
-                    for (dir in SERVICES_ARRAY) {
+                    SERVICES_ARRAY = [
+                        "spring-petclinic-api-gateway", 
+                        "spring-petclinic-vets-service", 
+                        "spring-petclinic-visits-service", 
+                        "spring-petclinic-customers-service"
+                    ];
+
+                    for (def dir in SERVICES_ARRAY) {
                         sh 'cp jtest_agent/agent.jar ./petclinic/${dir}/src/test/resources/coverage/agent.jar'
                     }
                 }
