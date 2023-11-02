@@ -272,7 +272,7 @@ pipeline {
                             -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
                             -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.scontrol.rep1.git.workspace="../" \
+                            -Dproperty.scontrol.rep1.git.workspace="/home/parasoft/jenkins/petclinic" \
                             -Dproperty.report.dtp.publish=${dtp_publish}; \
                             "
 
