@@ -71,10 +71,8 @@ pipeline {
 
                 // Update CTP JSON in local workspace
                 script {
-                    // Retrieve IP address of Jenkins server
-                    def jenkinsURL = env.JENKINS_URL
-                    def endIndex = jenkinsURL.indexOf(":", jenkinsURL.indexOf("://") + 3)
-                    def jenkinsIPAddress = jenkinsURL.substring(0, endIndex)
+                    // Retrieve IP address of EC2 instance (i.e., Jenkins server)
+                    def jenkinsIPAddress = sh(script: 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
 
                     // Read in ctp.json file
                     def jsonFilePath = "${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json"
@@ -86,7 +84,7 @@ pipeline {
                     //echo "${jsonFilePath}"
                     //echo "${json}"
 
-                    // Update the 'buildId' and 'coverageImages' properties
+                    // Iterate microservices in list and update CTP.json
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
                         echo "dir is: ${dir}"
