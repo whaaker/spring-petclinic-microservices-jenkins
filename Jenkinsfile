@@ -90,12 +90,15 @@ pipeline {
                         }
                     }
 
+                    // Convert JSON data to string
+                    def jsonText = groovy.json.JsonOutput.toJson(json)
+
                     // Write the updated JSON back to the file using writeJSON
                     //writeJSON(file: jsonFilePath, json, pretty: 4)
-                    writeJSON file: jsonFilePath, json: json, pretty: 4
+                    //writeJSON file: jsonFilePath, json: json, pretty: 4
 
                     // Write the updated JSON back to the file
-                    //writeFile(file: jsonFilePath, text: updatedJson)
+                    writeFile file: jsonFilePath, text: jsonText
                 }
 
                 sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
