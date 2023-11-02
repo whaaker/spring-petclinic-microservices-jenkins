@@ -99,12 +99,12 @@ pipeline {
 
                     // Write the updated JSON back to the file using writeJSON
                     //writeJSON(file: jsonFilePath, json, pretty: 4)
-                    //writeJSON file: jsonFilePath, json: json, pretty: 4
+                    writeJSON file: jsonFilePath, json: json, pretty: 4
 
                     // Write the updated JSON back to the file
                     //writeFile file: jsonFilePath, text: jsonText
 
-                    sh "echo '$jsonText' > $jsonFilePath"
+                    //sh "echo '$jsonText' > $jsonFilePath"
                 }
 
                 sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
