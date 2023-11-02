@@ -94,7 +94,7 @@ pipeline {
                             def originalPort = url.port
                             
                             // Combine jenkinsIPAddress with the original port
-                            matchingComponent.instances[0].coverage.agentUrl = "${jenkinsIPAddress}:${originalPort}"
+                            matchingComponent.instances[0].coverage.agentUrl = "http://${jenkinsIPAddress}:${originalPort}"
                             matchingComponent.instances[0].coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
                             matchingComponent.instances[0].coverage.coverageImages = "${functionalCovImage}"
                         } else {
