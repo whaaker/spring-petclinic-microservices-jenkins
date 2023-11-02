@@ -254,7 +254,7 @@ pipeline {
                         sh """
                             # Run Maven build with Jtest tasks via Docker
                             docker run \
-                            -u ${jenkins_uid}:${jenkins_gid} \
+                            -u $${jenkins_uid}:$${jenkins_gid} \
                             --rm -i \
                             --name jtest \
                             -v "\$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
@@ -270,7 +270,7 @@ pipeline {
                             -Djtest.settings="../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
                             -Dproperty.dtp.project=$${dir} \
-                            -Dproperty.report.dtp.publish=${dtp_publish}; \
+                            -Dproperty.report.dtp.publish=$${dtp_publish}; \
                             "
 
                             # check petclinic/target permissions
