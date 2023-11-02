@@ -90,8 +90,12 @@ pipeline {
                         }
                     }
 
+                    echo "Did I get this far?"
+
                     // Convert JSON data to string
                     def jsonText = groovy.json.JsonOutput.toJson(json)
+
+                    echo "How about this far?"
 
                     // Write the updated JSON back to the file using writeJSON
                     //writeJSON(file: jsonFilePath, json, pretty: 4)
