@@ -80,14 +80,14 @@ pipeline {
                     def json = new groovy.json.JsonSlurperClassic().parseText(jsonFile)
 
                     // debug
-                    echo "${jenkinsIPAddress}"
+                    //echo "${jenkinsIPAddress}"
                     //echo "${jsonFilePath}"
                     //echo "${json}"
 
                     // Iterate microservices in list and update CTP.json
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
-                        echo "dir is: ${dir}"
+                        //echo "dir is: ${dir}"
                         def matchingComponent = json.components.find { it.instances.find { it.coverage?.dtpProject == dir } }
                         if (matchingComponent) {
                             def url = new URL(matchingComponent.instances[0].coverage.agentUrl)
