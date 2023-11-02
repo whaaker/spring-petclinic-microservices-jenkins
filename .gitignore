@@ -1,2 +1,4 @@
 **/.parasoft
 **/*.bak
+**/target/**
+**/.settings/**

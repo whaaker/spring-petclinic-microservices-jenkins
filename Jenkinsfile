@@ -342,6 +342,25 @@ pipeline {
                 }
             }
             steps {
+                // Initialize Selenium Grid to execute Selenic tests
+                sh  '''
+                    docker run -d \
+                    --user ${jenkins_uid}:${jenkins_gid} \
+                    --name selenium-chrome \
+                    --network demo-net \
+                    selenium/standalone-chrome:latest
+                    '''
+                
+                // Run Selenic prepped for web functional testing from docker
+                sh  '''
+                    docker run -u ${jenkins_uid}:${jenkins_gid} \
+                    --rm -i --name selenic \
+                    --network demo-net \
+                    -v "$PWD/petclinic-jenkins/spring-petclinic-selenium-tests:/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
+                    -w "/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
+                    pteodor/selenic:7.0 sh -c "mvn test"
+                    '''
+
                 // Run functional tests
                 sh  '''
                     # TODO: The following examples (integrated with CTP REST API):
@@ -389,12 +408,12 @@ pipeline {
     post {
         // Clean after build
         always {
-            sh '''
-                docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
-                sleep 10s;
-                docker container prune -f;
-                docker image prune -f;
-            '''
+            // sh '''
+            //     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
+            //     sleep 10s;
+            //     docker container prune -f;
+            //     docker image prune -f;
+            // '''
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
