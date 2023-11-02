@@ -75,6 +75,7 @@ pipeline {
                     def json = new groovy.json.JsonSlurper().parseText(jsonFile)
 
                     // debug
+                    echo "${jsonFilePath}"
                     echo "${json}"
 
                     // Update the 'buildId' and 'coverageImages' properties
