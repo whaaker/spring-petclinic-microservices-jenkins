@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         // App Settings
-        project_name="PetClinic-Jenkins" //DTP Project
+        project_name="PetClinic-Jenkins" //DTP Root Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
         app_short="PC" //petclinic
         services_list = "spring-petclinic-api-gateway,spring-petclinic-vets-service,spring-petclinic-visits-service,spring-petclinic-customers-service"
@@ -24,17 +24,15 @@ pipeline {
         dtp_user="${PARASOFT_DTP_USER}" //admin
         dtp_pass="${PARASOFT_DTP_PASS}"
         dtp_publish="${PARASOFT_DTP_PUBLISH}" //false
-        buildId="${app_short}-${BUILD_TIMESTAMP}"
+        buildId="${app_short}-${BUILD_TIMESTAMP}" //do it dynamically instead
         
         // Parasoft Jtest Settings
         jtestSAConfig="jtest.builtin://Recommended Rules"
         jtestSessionTag="PetClinicJenkins-Jtest"
         unitCovImage="PetClinic_All;PetClinic_UnitTest"
 
-        // Parasoft SOAtest Settings
-        soatestConfig="soatest.user://Example Configuration"
-        soatestSessionTag="PetClinicJenkins-SOAtest"
-        soatestCovImage="PetClinic_All;PetClinic_SOAtest"
+        // Functional Test Settings
+        functionalCovImage="PetClinic_All;PetClinic_Selenium"
     }
     stages {
         stage('Setup') {
@@ -70,6 +68,33 @@ pipeline {
                 // Debugging
                 sh 'tree ./petclinic'
 
+                // Update CTP JSON in local workspace
+                script {
+                    def jsonFilePath = "${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json"
+                    def jsonFile = readFile(jsonFilePath)
+                    def json = readJSON text: jsonFile
+
+                    // Update the 'buildId' property under the specified path
+                    def servicesArray = services_list.split(',')
+                    for (def dir in servicesArray) {
+                        json.components.find { it.instances[0].coverage.dtpProject == dir }
+                        .instances[0]
+                        .coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
+
+                        json.components.find { it.instances[0].coverage.dtpProject == dir }
+                        .instances[0]
+                        .coverage.coverageImages = "${functionalCovImage}"
+                    }
+
+                    // Serialize the updated JSON
+                    def updatedJson = groovy.json.JsonOutput.toJson(json)
+
+                    // Write the updated JSON back to the file
+                    writeFile(file: jsonFilePath, text: updatedJson)
+                }
+
+                sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
+                
                 // Prepare the jtestcli.properties file
                 sh '''
                     # Set Up and write .properties file
@@ -100,8 +125,7 @@ pipeline {
                     session.tag=${jtestSessionTag}
                     dtp.url=${dtp_url}
                     dtp.user=${dtp_user}
-                    dtp.password=${dtp_pass}
-                    dtp.project=${project_name}" > ./petclinic-jenkins/jtest/jtestcli.properties
+                    dtp.password=${dtp_pass}" > ./petclinic-jenkins/jtest/jtestcli.properties
                     '''
             }
         }
@@ -112,7 +136,7 @@ pipeline {
                 }
             }
             steps {
-                // Execute the build with Jtest Maven plugin in docker
+                // Execute the build with Jtest Maven plugin in docker        
                 sh '''
                     # Run Maven build with Jtest tasks via Docker
                     docker run \
@@ -134,6 +158,7 @@ pipeline {
                     -Djtest.config='${jtestSAConfig}' \
                     -Djtest.report=./target/jtest/sa \
                     -Djtest.showSettings=true \
+                    -Dproperty.dtp.project=${project_name} \
                     -Dproperty.report.dtp.publish=${dtp_publish}; \
                     "
                     '''
@@ -171,7 +196,7 @@ pipeline {
                     --name jtest \
                     -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
                     -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                    -w "/home/parasoft/jenkins/petclinic" \
+                    -w "/home/parasoft/jenkins/petclinic/${dir}" \
                     --network=demo-net \
                     $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
@@ -186,6 +211,7 @@ pipeline {
                     -Djtest.config='builtin://Unit Tests' \
                     -Djtest.report=./target/jtest/ut \
                     -Djtest.showSettings=true \
+                    -Dproperty.dtp.project=${dir} \
                     -Dproperty.report.dtp.publish=${dtp_publish}; \
                     "
                     '''
@@ -275,13 +301,15 @@ pipeline {
                     '''
 
                 // update CTP with yaml script upload
-                sh '''
-                    # Set Up and write .properties file
-                    # TODO
-
+                sh """
                     # upload yaml file to CTP
-                    # TODO
-                    '''
+                    curl -X 'PUT' \
+                        -u ${ctp_user}:${ctp_pass} \
+                        '${ctp_url}/em/api/v3/environments/32/config' \
+                        -H 'accept: application/json' \
+                        -H 'Content-Type: application/json' \
+                        -d @${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json
+                    """
             }
         }
                 

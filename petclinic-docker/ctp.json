@@ -1,0 +1,186 @@
+{
+    "name" : "Local PetClinic",
+    "description" : "",
+    "tags" : [
+    ],
+    "components" : [
+        {
+            "name" : "Eureka Service Discovery",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "coverage" : {
+                        "agentUrl" : "",
+                        "dtpProject" : "",
+                        "buildId" : "",
+                        "coverageImages" : ""
+                    },
+                    "description" : "",
+                    "name" : "Discovery Server"
+                }
+            ]
+        },
+        {
+            "name" : "Git Repo",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+            ]
+        },
+        {
+            "name" : "Spring Boot Admin Server",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "coverage" : {
+                        "agentUrl" : "",
+                        "dtpProject" : "",
+                        "buildId" : "",
+                        "coverageImages" : ""
+                    },
+                    "description" : "",
+                    "name" : "Admin Server"
+                }
+            ]
+        },
+        {
+            "name" : "Spring Cloud Config Server",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "coverage" : {
+                        "agentUrl" : "",
+                        "dtpProject" : "",
+                        "buildId" : "",
+                        "coverageImages" : ""
+                    },
+                    "description" : "",
+                    "name" : "Config Server"
+                }
+            ]
+        },
+        {
+            "name" : "UI + API Gateway",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "coverage" : {
+                        "agentUrl" : "http://localhost:8051",
+                        "dtpProject" : "spring-petclinic-api-gateway",
+                        "buildId" : "spring-petclinic-api-gateway-2023-10-02",
+                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                    },
+                    "description" : "",
+                    "name" : "Local Gateway"
+                }
+            ]
+        },
+        {
+            "name" : "Web Browser",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+            ]
+        },
+        {
+            "name" : "Zipkin Distributed Logging Server",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "description" : "",
+                    "name" : "Tracing Server"
+                }
+            ]
+        },
+        {
+            "name" : "customers-service REST API",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "coverage" : {
+                        "agentUrl" : "http://localhost:8052",
+                        "dtpProject" : "spring-petclinic-customers-service",
+                        "buildId" : "spring-petclinic-customers-service-2023-10-02",
+                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                    },
+                    "description" : "",
+                    "name" : "Customers Microservice"
+                }
+            ]
+        },
+        {
+            "name" : "customers-storage",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+            ]
+        },
+        {
+            "name" : "vets-service REST API",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "coverage" : {
+                        "agentUrl" : "http://localhost:8053",
+                        "dtpProject" : "spring-petclinic-vets-service",
+                        "buildId" : "spring-petclinic-vets-service-2023-10-02",
+                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                    },
+                    "description" : "",
+                    "name" : "Vets Microservice"
+                }
+            ]
+        },
+        {
+            "name" : "vets-storage",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+            ]
+        },
+        {
+            "name" : "visits-service REST API",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+                {
+                    "coverage" : {
+                        "agentUrl" : "http://localhost:8054",
+                        "dtpProject" : "spring-petclinic-visits-service",
+                        "buildId" : "spring-petclinic-visits-service-2023-10-02",
+                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                    },
+                    "description" : "",
+                    "name" : "Visits Microservice"
+                }
+            ]
+        },
+        {
+            "name" : "visits-storage",
+            "description" : "",
+            "tags" : [
+            ],
+            "instances" : [
+            ]
+        }
+    ]
+}
