@@ -252,6 +252,8 @@ pipeline {
                     for (def dir in servicesArray) {
                         // Execute the build with Jtest Maven plugin in docker
                         sh """
+                            echo "dir is: \${dir}"
+                            
                             # Run Maven build with Jtest tasks via Docker
                             docker run \\
                             -u \${jenkins_uid}:\${jenkins_gid} \\
