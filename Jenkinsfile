@@ -71,11 +71,18 @@ pipeline {
 
                 // Update CTP JSON in local workspace
                 script {
+                    // Retrieve IP address of Jenkins server
+                    def jenkinsURL = env.JENKINS_URL
+                    def endIndex = jenkinsURL.indexOf(":", jenkinsURL.indexOf("://") + 3)
+                    def jenkinsIPAddress = jenkinsURL.substring(0, endIndex)
+
+                    // Read in ctp.json file
                     def jsonFilePath = "${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json"
                     def jsonFile = readFile(jsonFilePath)
                     def json = new groovy.json.JsonSlurperClassic().parseText(jsonFile)
 
                     // debug
+                    echo "${jenkinsIPAddress}"
                     //echo "${jsonFilePath}"
                     //echo "${json}"
 
@@ -85,6 +92,11 @@ pipeline {
                         echo "dir is: ${dir}"
                         def matchingComponent = json.components.find { it.instances.find { it.coverage?.dtpProject == dir } }
                         if (matchingComponent) {
+                            def url = new URL(matchingComponent.instances[0].coverage.agentUrl)
+                            def originalPort = url.port
+                            
+                            // Combine jenkinsIPAddress with the original port
+                            matchingComponent.instances[0].coverage.agentUrl = "${jenkinsIPAddress}:${originalPort}"
                             matchingComponent.instances[0].coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
                             matchingComponent.instances[0].coverage.coverageImages = "${functionalCovImage}"
                         } else {
