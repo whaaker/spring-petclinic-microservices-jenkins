@@ -72,22 +72,18 @@ pipeline {
                 script {
                     def jsonFilePath = "${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json"
                     def jsonFile = readFile(jsonFilePath)
-                    def json = readJSON text: jsonFile
+                    def json = new groovy.json.JsonSlurper().parseText(jsonFile)
 
                     // Update the 'buildId' property under the specified path
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
-                        json.components.find { it.instances[0].coverage.dtpProject == dir }
-                        .instances[0]
-                        .coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
-
-                        json.components.find { it.instances[0].coverage.dtpProject == dir }
-                        .instances[0]
-                        .coverage.coverageImages = "${functionalCovImage}"
+                        def instance = json.components.find { it.instances[0].coverage.dtpProject == dir }.instances[0].coverage
+                        instance.buildId = "${dir}-${BUILD_TIMESTAMP}"
+                        instance.coverageImages = "${functionalCovImage}"
                     }
 
                     // Serialize the updated JSON
-                    def updatedJson = groovy.json.JsonOutput.toJson(json)
+                    def updatedJson = new groovy.json.JsonBuilder(json).toPrettyString()
 
                     // Write the updated JSON back to the file
                     writeFile(file: jsonFilePath, text: updatedJson)
