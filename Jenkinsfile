@@ -251,14 +251,14 @@ pipeline {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
                         // Execute the build with Jtest Maven plugin in docker
-                        sh '''
+                        sh """
                             # Run Maven build with Jtest tasks via Docker
                             docker run \
                             -u ${jenkins_uid}:${jenkins_gid} \
                             --rm -i \
                             --name jtest \
-                            -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
-                            -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                            -v "\$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                            -v "\$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
                             -w "/home/parasoft/jenkins/petclinic/${dir}" \
                             --network=demo-net \
                             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
@@ -281,7 +281,7 @@ pipeline {
                             #unzip -q ./petclinic/${dir}/target/jtest/monitor/monitor.zip -d .
                             #ls -ll
                             #ls -ll monitor
-                            '''
+                            """
                     }
                 }
             }
