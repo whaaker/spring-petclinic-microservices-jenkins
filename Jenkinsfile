@@ -95,9 +95,6 @@ pipeline {
                     // debug
                     //echo "${json}"
 
-                    // Convert JSON data to string
-                    def jsonText = groovy.json.JsonOutput.toJson(json)
-
                     // Write the updated JSON back to the file using writeJSON
                     writeJSON file: jsonFilePath, json: json, pretty: 4
                 }
@@ -326,7 +323,7 @@ pipeline {
                 }
             }
             steps {
-                // Setup workspace and soatestcli.properties file
+                // Run functional tests
                 sh  '''
                     # TODO: The following examples (integrated with CTP REST API):
                     #   - [High-code, open source tool use case]
