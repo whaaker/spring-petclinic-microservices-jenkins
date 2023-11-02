@@ -267,7 +267,7 @@ pipeline {
                             mvn package jtest:monitor \
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.skip=true \
-                            -Djtest.settings='../petclinic-jenkins/jtest/jtestcli.properties' \
+                            -Djtest.settings="../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
                             -Dproperty.dtp.project=${dir} \
                             -Dproperty.report.dtp.publish=${dtp_publish}; \
