@@ -29,6 +29,10 @@ This repository is a working demonstration of Parasoft's Continuous Quality Plat
 - PARASOFT_DTP_PASS
 - PARASOFT_DTP_PUBLISH
     - true/false
+- PARASOFT_CTP_URL
+- PARASOFT_CTP_USER
+- PARASOFT_CTP_PASS
+- PARASOFT_CTP_ENVID
 
 ## Configure Jenkins Pipeline with the following:
 - Jenkinsfile: Quality Scan, Unit Tests, Deploy with coverage, Functional Test

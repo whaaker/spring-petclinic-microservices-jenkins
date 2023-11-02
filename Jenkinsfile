@@ -20,6 +20,7 @@ pipeline {
         ctp_url="${PARASOFT_CTP_URL}" //https://[ip from thanos VM]:8080
         ctp_user="${PARASOFT_CTP_USER}" //admin
         ctp_pass="${PARASOFT_CTP_PASS}"
+        ctp_envId="${PARASOFT_CTP_ENVID}" //32
         dtp_url="${PARASOFT_DTP_URL}" //https://dtp:8443
         dtp_user="${PARASOFT_DTP_USER}" //admin
         dtp_pass="${PARASOFT_DTP_PASS}"
@@ -75,8 +76,8 @@ pipeline {
                     def json = new groovy.json.JsonSlurperClassic().parseText(jsonFile)
 
                     // debug
-                    echo "${jsonFilePath}"
-                    echo "${json}"
+                    //echo "${jsonFilePath}"
+                    //echo "${json}"
 
                     // Update the 'buildId' and 'coverageImages' properties
                     def servicesArray = services_list.split(',')
@@ -92,21 +93,16 @@ pipeline {
                     }
 
                     // debug
-                    echo "${json}"
+                    //echo "${json}"
 
                     // Convert JSON data to string
                     def jsonText = groovy.json.JsonOutput.toJson(json)
 
                     // Write the updated JSON back to the file using writeJSON
-                    //writeJSON(file: jsonFilePath, json, pretty: 4)
                     writeJSON file: jsonFilePath, json: json, pretty: 4
-
-                    // Write the updated JSON back to the file
-                    //writeFile file: jsonFilePath, text: jsonText
-
-                    //sh "echo '$jsonText' > $jsonFilePath"
                 }
 
+                // Debug
                 sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
                 
                 // Prepare the jtestcli.properties file
@@ -210,7 +206,7 @@ pipeline {
                     --name jtest \
                     -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
                     -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                    -w "/home/parasoft/jenkins/petclinic/${dir}" \
+                    -w "/home/parasoft/jenkins/petclinic" \
                     --network=demo-net \
                     $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
@@ -225,7 +221,7 @@ pipeline {
                     -Djtest.config='builtin://Unit Tests' \
                     -Djtest.report=./target/jtest/ut \
                     -Djtest.showSettings=true \
-                    -Dproperty.dtp.project=${dir} \
+                    -Dproperty.dtp.project=${project_name} \
                     -Dproperty.report.dtp.publish=${dtp_publish}; \
                     "
                     '''
@@ -319,10 +315,10 @@ pipeline {
                     # upload yaml file to CTP
                     curl -X 'PUT' \
                         -u ${ctp_user}:${ctp_pass} \
-                        '${ctp_url}/em/api/v3/environments/32/config' \
+                        '${ctp_url}/em/api/v3/environments/${ctp_envId}/config' \
                         -H 'accept: application/json' \
                         -H 'Content-Type: application/json' \
-                        -d @${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json
+                        -d @./petclinic-jenkins/petclinic-docker/ctp.json
                     """
             }
         }
