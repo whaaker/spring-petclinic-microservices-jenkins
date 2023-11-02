@@ -136,13 +136,15 @@ pipeline {
                     scontrol.git.exec=git
                     scontrol.rep1.git.branch=main
                     scontrol.rep1.git.url=${project_repo}
+                    scontrol.rep1.git.workspace=/home/parasoft/jenkins/petclinic
                     scontrol.rep1.type=git
 
                     build.id=${buildId}
                     session.tag=${jtestSessionTag}
                     dtp.url=${dtp_url}
                     dtp.user=${dtp_user}
-                    dtp.password=${dtp_pass}" > ./petclinic-jenkins/jtest/jtestcli.properties
+                    dtp.password=${dtp_pass}
+                    report.dtp.publish=${dtp_publish}" > ./petclinic-jenkins/jtest/jtestcli.properties
                     '''
             }
         }
@@ -176,7 +178,6 @@ pipeline {
                     -Djtest.report=./target/jtest/sa \
                     -Djtest.showSettings=true \
                     -Dproperty.dtp.project=${project_name} \
-                    -Dproperty.report.dtp.publish=${dtp_publish}; \
                     "
                     '''
                 echo '---> Parsing 10.x static analysis reports'
@@ -229,7 +230,6 @@ pipeline {
                     -Djtest.report=./target/jtest/ut \
                     -Djtest.showSettings=true \
                     -Dproperty.dtp.project=${project_name} \
-                    -Dproperty.report.dtp.publish=${dtp_publish}; \
                     "
                     '''
                 echo '---> Parsing 10.x unit test reports'
@@ -282,8 +282,6 @@ pipeline {
                             -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
                             -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.scontrol.rep1.git.workspace="/home/parasoft/jenkins/petclinic" \
-                            -Dproperty.report.dtp.publish=${dtp_publish}; \
                             "
 
                             # check petclinic/target permissions
@@ -358,7 +356,15 @@ pipeline {
                     --network demo-net \
                     -v "$PWD/petclinic-jenkins/spring-petclinic-selenium-tests:/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
                     -w "/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
-                    pteodor/selenic:7.0 sh -c "mvn test"
+                    pteodor/selenic:7.0 sh -c " \
+                    
+                    # Run Selenium tests, passing in System variables into the test
+                    mvn test \
+                    -DCTP_BASE_URL=${ctp_url} \
+                    -DCTP_USER=${ctp_user} \
+                    -DCTP_PASS=${ctp_pass} \
+                    -DCTP_ENV_ID=${ctp_envId} \
+                    "
                     '''
 
                 // Run functional tests
