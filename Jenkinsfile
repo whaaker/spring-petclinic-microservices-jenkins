@@ -74,7 +74,10 @@ pipeline {
                     def jsonFile = readFile(jsonFilePath)
                     def json = new groovy.json.JsonSlurper().parseText(jsonFile)
 
-                    // Update the 'buildId' property under the specified path
+                    // debug
+                    echo "${json}"
+
+                    // Update the 'buildId' and 'coverageImages' properties
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
                         def instance = json.components.find { it.instances[0].coverage.dtpProject == dir }.instances[0].coverage
