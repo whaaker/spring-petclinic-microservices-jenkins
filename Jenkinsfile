@@ -299,8 +299,6 @@ pipeline {
                     
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml up -d;
                     sleep 80s;
-
-                    
                     '''
                 // Health check coverage agents
                 sh '''
@@ -309,7 +307,6 @@ pipeline {
                     curl -iv --raw http://localhost:8052/status
                     curl -iv --raw http://localhost:8053/status
                     '''
-
                 // update CTP with yaml script upload
                 sh """
                     # upload yaml file to CTP
@@ -322,7 +319,6 @@ pipeline {
                     """
             }
         }
-                
         stage('Functional Test') {
             when {
                 expression {
@@ -389,8 +385,7 @@ pipeline {
                     **/target/**/*.jar, 
                     **/target/jtest/sa/**, 
                     **/target/jtest/ut/**, 
-                    **/target/jtest/monitor/**, 
-                    **/soatest/report/**''',
+                    **/target/jtest/monitor/**''',
                 fingerprint: true, 
                 onlyIfSuccessful: true,
                 excludes: '''
