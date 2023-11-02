@@ -252,7 +252,7 @@ pipeline {
                     for (def dir in servicesArray) {
                         // Execute the build with Jtest Maven plugin in docker
                         sh '''
-                            echo "dir is: ${dir}"
+                            echo "dir is: '''+dir+'''"
                             
                             # Run Maven build with Jtest tasks via Docker
                             docker run \
@@ -261,7 +261,7 @@ pipeline {
                             --name jtest \
                             -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
                             -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                            -w "/home/parasoft/jenkins/petclinic/${dir}" \
+                            -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
                             --network=demo-net \
                             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
@@ -271,7 +271,7 @@ pipeline {
                             -Dmaven.test.skip=true \
                             -Djtest.settings="../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
-                            -Dproperty.dtp.project=${dir} \
+                            -Dproperty.dtp.project='''+dir+''' \
                             -Dproperty.report.dtp.publish=${dtp_publish}; \
                             "
 
@@ -280,7 +280,7 @@ pipeline {
 
                             # Unzip monitor.zip
                             #mkdir monitor
-                            #unzip -q ./petclinic/${dir}/target/jtest/monitor/monitor.zip -d .
+                            #unzip -q ./petclinic/'''+dir+'''/target/jtest/monitor/monitor.zip -d .
                             #ls -ll
                             #ls -ll monitor
                             '''
