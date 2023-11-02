@@ -72,7 +72,7 @@ pipeline {
                 script {
                     def jsonFilePath = "${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json"
                     def jsonFile = readFile(jsonFilePath)
-                    def json = new groovy.json.JsonSlurper().parseText(jsonFile)
+                    def json = new groovy.json.JsonSlurperClassic().parseText(jsonFile)
 
                     // debug
                     echo "${jsonFilePath}"
