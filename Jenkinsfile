@@ -81,12 +81,12 @@ pipeline {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
                         echo "dir is: ${dir}"
-                        def instance = json.components.find { it.instances[0].coverage.dtpProject == dir }
-                        if (instance) {
-                            instance.instances[0].coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
-                            instance.instances[0].coverage.coverageImages = "${functionalCovImage}"
+                        def matchingComponent = json.components.find { it.instances.find { it.coverage?.dtpProject == dir } }
+                        if (matchingComponent) {
+                            matchingComponent.instances[0].coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
+                            matchingComponent.instances[0].coverage.coverageImages = "${functionalCovImage}"
                         } else {
-                            echo "instance was NULL!"
+                            echo "Something is NULL!"
                         }
                     }
 
