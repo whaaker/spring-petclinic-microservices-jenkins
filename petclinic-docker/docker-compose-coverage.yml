@@ -21,6 +21,7 @@ services:
   customers-service:
     image: springcommunity/spring-petclinic-customers-service
     container_name: customers-service
+    user: 995:991
     mem_limit: 512M
     depends_on:
      - config-server
@@ -37,6 +38,7 @@ services:
   visits-service:
     image: springcommunity/spring-petclinic-visits-service
     container_name: visits-service
+    user: 995:991
     mem_limit: 512M
     depends_on:
      - config-server
@@ -55,9 +57,9 @@ services:
     entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "${COV_AGENT_ARGS},port=8052", "org.springframework.boot.loader.JarLauncher"]
   
   vets-service:
-    user: root:root
     image: springcommunity/spring-petclinic-vets-service
     container_name: vets-service
+    user: 995:991
     mem_limit: 512M
     depends_on:
      - config-server
@@ -74,6 +76,7 @@ services:
   api-gateway:
     image: springcommunity/spring-petclinic-api-gateway
     container_name: api-gateway
+    user: 995:991
     mem_limit: 512M
     depends_on:
      - config-server
