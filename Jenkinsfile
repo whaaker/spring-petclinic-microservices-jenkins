@@ -80,9 +80,14 @@ pipeline {
                     // Update the 'buildId' and 'coverageImages' properties
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
+                        echo "dir is: ${dir}"
                         def instance = json.components.find { it.instances[0].coverage.dtpProject == dir }.instances[0].coverage
-                        instance.buildId = "${dir}-${BUILD_TIMESTAMP}"
-                        instance.coverageImages = "${functionalCovImage}"
+                        if (instance) {
+                            instance.buildId = "${dir}-${BUILD_TIMESTAMP}"
+                            instance.coverageImages = "${functionalCovImage}"
+                        } else {
+                            echo "instance was NULL!"
+                        }
                     }
 
                     // Serialize the updated JSON
