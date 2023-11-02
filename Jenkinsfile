@@ -91,7 +91,8 @@ pipeline {
                     }
 
                     // Write the updated JSON back to the file using writeJSON
-                    writeJSON(file: jsonFilePath, json, pretty: 4)
+                    //writeJSON(file: jsonFilePath, json, pretty: 4)
+                    writeJSON file: jsonFilePath, json: json
 
                     // Write the updated JSON back to the file
                     //writeFile(file: jsonFilePath, text: updatedJson)
