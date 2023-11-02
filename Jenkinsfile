@@ -360,7 +360,8 @@ pipeline {
                     
                     # Run Selenium tests, passing in System variables into the test
                     mvn test \
-                    -DCTP_BASE_URL=${ctp_url} \
+                    -DPETCLINIC_BASE_URL="http://api-gateway:8080" \
+                    -DCTP_BASE_URL="${ctp_url}" \
                     -DCTP_USER=${ctp_user} \
                     -DCTP_PASS=${ctp_pass} \
                     -DCTP_ENV_ID=${ctp_envId} \
