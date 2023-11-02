@@ -247,37 +247,43 @@ pipeline {
                 }
             }
             steps {
-                // Execute the build with Jtest Maven plugin in docker
-                sh '''
-                    # Run Maven build with Jtest tasks via Docker
-                    docker run \
-                    -u ${jenkins_uid}:${jenkins_gid} \
-                    --rm -i \
-                    --name jtest \
-                    -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
-                    -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                    -w "/home/parasoft/jenkins/petclinic" \
-                    --network=demo-net \
-                    $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
+                script {
+                    def servicesArray = services_list.split(',')
+                    for (def dir in servicesArray) {
+                        // Execute the build with Jtest Maven plugin in docker
+                        sh """
+                            # Run Maven build with Jtest tasks via Docker
+                            docker run \
+                            -u ${jenkins_uid}:${jenkins_gid} \
+                            --rm -i \
+                            --name jtest \
+                            -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                            -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                            -w "/home/parasoft/jenkins/petclinic/${dir}" \
+                            --network=demo-net \
+                            $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
-                    # Package the application with the Jtest Monitor
-                    mvn package jtest:monitor \
-                    -s /home/parasoft/.m2/settings.xml \
-                    -Dmaven.test.skip=true \
-                    -Djtest.settings='../petclinic-jenkins/jtest/jtestcli.properties' \
-                    -Djtest.showSettings=true \
-                    -Dproperty.report.dtp.publish=${dtp_publish}; \
-                    "
+                            # Package the application with the Jtest Monitor
+                            mvn package jtest:monitor \
+                            -s /home/parasoft/.m2/settings.xml \
+                            -Dmaven.test.skip=true \
+                            -Djtest.settings='../petclinic-jenkins/jtest/jtestcli.properties' \
+                            -Djtest.showSettings=true \
+                            -Dproperty.dtp.project=${dir} \
+                            -Dproperty.report.dtp.publish=${dtp_publish}; \
+                            "
 
-                    # check petclinic/target permissions
-                    #ls -la ./petclinic/target
+                            # check petclinic/target permissions
+                            #ls -la ./petclinic/target
 
-                    # Unzip monitor.zip
-                    mkdir monitor
-                    unzip -q ./petclinic/target/jtest/monitor/monitor.zip -d .
-                    ls -ll
-                    ls -ll monitor
-                    '''
+                            # Unzip monitor.zip
+                            #mkdir monitor
+                            #unzip -q ./petclinic/${dir}/target/jtest/monitor/monitor.zip -d .
+                            #ls -ll
+                            #ls -ll monitor
+                            """
+                    }
+                }
             }
         }
         stage('Deploy-CodeCoverage') {
