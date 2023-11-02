@@ -90,11 +90,11 @@ pipeline {
                         }
                     }
 
-                    // Serialize the updated JSON
-                    def updatedJson = new groovy.json.JsonBuilder(json).toPrettyString()
+                    // Write the updated JSON back to the file using writeJSON
+                    writeJSON(file: jsonFilePath, json, pretty: 4)
 
                     // Write the updated JSON back to the file
-                    writeFile(file: jsonFilePath, text: updatedJson)
+                    //writeFile(file: jsonFilePath, text: updatedJson)
                 }
 
                 sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
