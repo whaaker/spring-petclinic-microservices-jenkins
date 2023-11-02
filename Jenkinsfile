@@ -92,7 +92,7 @@ pipeline {
 
                     // Write the updated JSON back to the file using writeJSON
                     //writeJSON(file: jsonFilePath, json, pretty: 4)
-                    writeJSON file: jsonFilePath, json: json
+                    writeJSON file: jsonFilePath, json: json, pretty: 4
 
                     // Write the updated JSON back to the file
                     //writeFile(file: jsonFilePath, text: updatedJson)
