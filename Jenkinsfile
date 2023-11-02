@@ -338,7 +338,7 @@ pipeline {
         stage('Functional Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -408,12 +408,14 @@ pipeline {
     post {
         // Clean after build
         always {
-            // sh '''
-            //     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
-            //     sleep 10s;
-            //     docker container prune -f;
-            //     docker image prune -f;
-            // '''
+            sh '''
+                sh 'docker container stop selenium-chrome'
+                sh 'docker container rm selenium-chrome'
+                #docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
+                #sleep 10s;
+                #docker container prune -f;
+                #docker image prune -f;
+            '''
 
             archiveArtifacts(artifacts: '''
                     **/target/**/*.war, 
