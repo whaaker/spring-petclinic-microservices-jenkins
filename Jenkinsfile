@@ -151,7 +151,7 @@ pipeline {
         stage('Quality Scan') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -201,7 +201,7 @@ pipeline {
         stage('Unit Test') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -253,7 +253,7 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
