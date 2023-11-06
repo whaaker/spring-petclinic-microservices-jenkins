@@ -417,11 +417,11 @@ pipeline {
         // Clean after build
         always {
             sh '''
-                docker container stop selenium-chrome;
-                docker container rm selenium-chrome;
-                sleep 10s;
-                docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
-                sleep 10s;
+                #docker container stop selenium-chrome;
+                #docker container rm selenium-chrome;
+                #sleep 10s;
+                #docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
+                #sleep 10s;
                 docker container prune -f;
                 docker image prune -f;
             '''
