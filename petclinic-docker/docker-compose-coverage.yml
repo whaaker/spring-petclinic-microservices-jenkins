@@ -5,6 +5,8 @@ services:
     image: springcommunity/spring-petclinic-config-server
     container_name: config-server
     mem_limit: 512M
+    networks:
+      demo-net:
     ports:
      - 8888:8888
   
@@ -15,6 +17,8 @@ services:
     depends_on:
       - config-server
     entrypoint: ["./dockerize","-wait=tcp://config-server:8888","-timeout=60s","--","java", "org.springframework.boot.loader.JarLauncher"]
+    networks:
+      demo-net:
     ports:
      - 8761:8761
   
@@ -27,6 +31,8 @@ services:
      - config-server
      - discovery-server
     entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "${COV_AGENT_ARGS},port=8052", "org.springframework.boot.loader.JarLauncher"]
+    networks:
+      demo-net:
     ports:
     - 8081:8081
     - 8052:8052
@@ -47,6 +53,8 @@ services:
 #      - /home/ec2-user/microservices/spring-petclinic-microservices/spring-petclinic-visits-service/src/test/resources/coverage/cov.env
 #    environment:
 #      JAVA_OPTS: '-javaagent:/tmp/coverage/agent.jar=settings=/tmp/coverage/agent.properties,runtimeData=/tmp/coverage/runtime_coverage'
+    networks:
+      demo-net:
     ports:
      - 8882:8082
      - 8050:8050 # cov agent
@@ -64,6 +72,8 @@ services:
     depends_on:
      - config-server
      - discovery-server
+    networks:
+      demo-net:
     ports:
      - 8083:8083
      - 8053:8053 # cov agent
@@ -81,6 +91,8 @@ services:
     depends_on:
      - config-server
      - discovery-server
+    networks:
+      demo-net:
     ports:
      - 8099:8080
      - 8051:8051 # cov agent
@@ -96,6 +108,8 @@ services:
     mem_limit: 512M
     environment:
     - JAVA_OPTS=-XX:+UnlockExperimentalVMOptions -Djava.security.egd=file:/dev/./urandom
+    networks:
+      demo-net:
     ports:
      - 9411:9411
   
@@ -107,6 +121,8 @@ services:
      - config-server
      - discovery-server
     entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "org.springframework.boot.loader.JarLauncher"]
+    networks:
+      demo-net:
     ports:
      - 9090:9090
 
@@ -127,3 +143,8 @@ services:
 #    ports:
 #    - 9091:9090
 #
+
+networks:
+  demo-net:
+    external: true
+    name: demo-net
