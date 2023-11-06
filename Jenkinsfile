@@ -365,6 +365,7 @@ pipeline {
                     -DCTP_USER=${ctp_user} \
                     -DCTP_PASS=${ctp_pass} \
                     -DCTP_ENV_ID=${ctp_envId} \
+                    -DGRID_URL="http://selenium-chrome:4444/wd/hub" \
                     "
                     '''
 
