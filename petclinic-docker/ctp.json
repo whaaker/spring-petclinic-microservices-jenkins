@@ -10,16 +10,6 @@
             "tags" : [
             ],
             "instances" : [
-                {
-                    "coverage" : {
-                        "agentUrl" : "",
-                        "dtpProject" : "",
-                        "buildId" : "",
-                        "coverageImages" : ""
-                    },
-                    "description" : "",
-                    "name" : "Discovery Server"
-                }
             ]
         },
         {
@@ -36,16 +26,6 @@
             "tags" : [
             ],
             "instances" : [
-                {
-                    "coverage" : {
-                        "agentUrl" : "",
-                        "dtpProject" : "",
-                        "buildId" : "",
-                        "coverageImages" : ""
-                    },
-                    "description" : "",
-                    "name" : "Admin Server"
-                }
             ]
         },
         {
@@ -54,16 +34,6 @@
             "tags" : [
             ],
             "instances" : [
-                {
-                    "coverage" : {
-                        "agentUrl" : "",
-                        "dtpProject" : "",
-                        "buildId" : "",
-                        "coverageImages" : ""
-                    },
-                    "description" : "",
-                    "name" : "Config Server"
-                }
             ]
         },
         {
@@ -98,10 +68,6 @@
             "tags" : [
             ],
             "instances" : [
-                {
-                    "description" : "",
-                    "name" : "Tracing Server"
-                }
             ]
         },
         {

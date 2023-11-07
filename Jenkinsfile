@@ -138,7 +138,6 @@ pipeline {
                     license.network.password=${ls_pass}
 
                     report.associations=false
-                    report.coverage.images=${unitCovImage}
                     report.scontrol=full
                     scope.local=true
                     scope.scontrol=true
@@ -241,6 +240,7 @@ pipeline {
                     -Djtest.report=./target/jtest/ut \
                     -Djtest.showSettings=true \
                     -Dproperty.dtp.project=${project_name} \
+                    -Dproperty.report.coverage.images=${unitCovImage} \
                     "
                     '''
                 echo '---> Parsing 10.x unit test reports'
@@ -293,6 +293,7 @@ pipeline {
                             -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
                             -Dproperty.dtp.project='''+dir+''' \
+                            -Dproperty.report.coverage.images=${functionalCovImage} \
                             "
 
                             # check petclinic/target permissions
