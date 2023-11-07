@@ -21,8 +21,8 @@ class NavigateTest {
 	private static final String PETCLINIC_BASE_URL = "http://54.201.169.117:8099";
 	private static final String GRID_URL = "http://54.201.169.117:4444/wd/hub";
 //	private static final String CHROME_DRIVER = "C:\\Users\\whaaker\\Downloads\\SOAVirt\\Extensions\\chromedriver_win64_(v119)\\chromedriver-win64\\chromedriver.exe";
-	//private static RemoteWebDriver driver;
-	private static WebDriver driver;
+	private static RemoteWebDriver driver;
+//	private static WebDriver driver;
 	
 	@BeforeAll
 	static void openBrowser() {
