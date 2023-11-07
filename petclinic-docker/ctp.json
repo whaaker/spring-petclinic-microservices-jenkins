@@ -48,7 +48,7 @@
                         "dtpProject" : "spring-petclinic-api-gateway",
                         "dtpFilter" : "spring-petclinic-api-gateway",
                         "buildId" : "spring-petclinic-api-gateway-2023-10-02",
-                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                        "coverageImages" : "petclinic-jenkins"
                     },
                     "description" : "",
                     "name" : "Local Gateway"
@@ -83,7 +83,7 @@
                         "dtpProject" : "spring-petclinic-customers-service",
                         "dtpFilter" : "spring-petclinic-customers-service",
                         "buildId" : "spring-petclinic-customers-service-2023-10-02",
-                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                        "coverageImages" : "petclinic-jenkins"
                     },
                     "description" : "",
                     "name" : "Customers Microservice"
@@ -110,7 +110,7 @@
                         "dtpProject" : "spring-petclinic-vets-service",
                         "dtpFilter" : "spring-petclinic-vets-service",
                         "buildId" : "spring-petclinic-vets-service-2023-10-02",
-                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                        "coverageImages" : "petclinic-jenkins"
                     },
                     "description" : "",
                     "name" : "Vets Microservice"
@@ -137,7 +137,7 @@
                         "dtpProject" : "spring-petclinic-visits-service",
                         "dtpFilter" : "spring-petclinic-visits-service",
                         "buildId" : "spring-petclinic-visits-service-2023-10-02",
-                        "coverageImages" : "PetClinic_All;PetClinic_Selenium"
+                        "coverageImages" : "petclinic-jenkins"
                     },
                     "description" : "",
                     "name" : "Visits Microservice"

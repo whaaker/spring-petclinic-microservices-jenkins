@@ -30,10 +30,12 @@ pipeline {
         // Parasoft Jtest Settings
         jtestSAConfig="jtest.builtin://Recommended Rules"
         jtestSessionTag="PetClinicJenkins-Jtest"
-        unitCovImage="PetClinic_All;PetClinic_UnitTest"
+        //unitCovImage="PetClinic_All;PetClinic_UnitTest"
+        unitCovImage="petclinic-jenkins"
 
         // Functional Test Settings
-        functionalCovImage="PetClinic_All;PetClinic_Selenium"
+        //functionalCovImage="PetClinic_All;PetClinic_Selenium"
+        functionalCovImage="petclinic-jenkins"
     }
     stages {
         stage('Setup') {
