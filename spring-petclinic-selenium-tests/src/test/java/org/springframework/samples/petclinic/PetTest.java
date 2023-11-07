@@ -21,13 +21,13 @@ class PetTest {
 	
 	private static final String PETCLINIC_BASE_URL = "http://54.201.169.117:8099";
 	private static final String GRID_URL = "http://54.201.169.117:4444/wd/hub";
-	private static final String CHROME_DRIVER = "C:\\Users\\whaaker\\Downloads\\SOAVirt\\Extensions\\chromedriver_win64_(v119)\\chromedriver-win64\\chromedriver.exe";
+//	private static final String CHROME_DRIVER = "C:\\Users\\whaaker\\Downloads\\SOAVirt\\Extensions\\chromedriver_win64_(v119)\\chromedriver-win64\\chromedriver.exe";
 	//private static RemoteWebDriver driver;
 	private static WebDriver driver;
 	
 	@BeforeAll
 	static void openBrowser() {
-		System.setProperty("webdriver.chrome.driver", CHROME_DRIVER);
+//		System.setProperty("webdriver.chrome.driver", CHROME_DRIVER);
 		URL url = null;
 		try {
 			url = new URL(System.getProperty("GRID_URL", GRID_URL));
@@ -50,14 +50,16 @@ class PetTest {
 //        opts.addArguments("--disable-gpu");
 //        opts.addArguments("--no-sandbox");
 		
-		driver = new RemoteWebDriver(url, opts);
+		driver = new RemoteWebDriver(url, opts, false);
 		
 //		driver = new ChromeDriver(opts);
 	}
 	
 	@AfterAll
 	static void closeBrowser() {
-		driver.close();
+		if(driver != null) {
+			driver.quit();
+		}
 	}
 
 	@Test
