@@ -312,7 +312,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -338,7 +338,7 @@ pipeline {
         stage('Functional Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
