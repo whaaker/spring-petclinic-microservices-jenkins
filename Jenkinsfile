@@ -319,7 +319,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -359,7 +359,7 @@ pipeline {
                     -p 7900:7900 \
                     selenium/standalone-chrome:latest;
 
-                    sleep 10s;
+                    sleep 5s;
                     '''
                 
                 // Run Selenium tests from Jenkins host (assumes Maven & Java installed)
