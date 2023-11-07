@@ -7,40 +7,31 @@
         {
             "name" : "Eureka Service Discovery",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "Git Repo",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "Spring Boot Admin Server",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "Spring Cloud Config Server",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "UI + API Gateway",
             "description" : "",
-            "tags" : [
-            ],
+            "tags" : [],
             "instances" : [
                 {
                     "coverage" : {
@@ -58,24 +49,19 @@
         {
             "name" : "Web Browser",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "Zipkin Distributed Logging Server",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "customers-service REST API",
             "description" : "",
-            "tags" : [
-            ],
+            "tags" : [],
             "instances" : [
                 {
                     "coverage" : {
@@ -93,16 +79,13 @@
         {
             "name" : "customers-storage",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "vets-service REST API",
             "description" : "",
-            "tags" : [
-            ],
+            "tags" : [],
             "instances" : [
                 {
                     "coverage" : {
@@ -120,16 +103,13 @@
         {
             "name" : "vets-storage",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         },
         {
             "name" : "visits-service REST API",
             "description" : "",
-            "tags" : [
-            ],
+            "tags" : [],
             "instances" : [
                 {
                     "coverage" : {
@@ -147,10 +127,8 @@
         {
             "name" : "visits-storage",
             "description" : "",
-            "tags" : [
-            ],
-            "instances" : [
-            ]
+            "tags" : [],
+            "instances" : []
         }
     ]
 }
