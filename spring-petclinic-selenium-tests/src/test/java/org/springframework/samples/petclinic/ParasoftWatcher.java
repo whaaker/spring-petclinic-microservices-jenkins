@@ -42,7 +42,10 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 		log.info("baseURI = " + RestAssured.baseURI);
 		log.info("port = " + RestAssured.port);
 	    log.info("Calling... POST /em/api/v3/environments/" + CTP_ENV_ID + "/agents/session/start");
-	    sessionId = RestAssured.with().contentType(ContentType.JSON).post("em/api/v3/environments/" + CTP_ENV_ID + "/agents/session/start").body().jsonPath().getString("session");
+	    Response response = RestAssured.with().contentType(ContentType.JSON).post("em/api/v3/environments/" + CTP_ENV_ID + "/agents/session/start"); 
+	    log.info("Response Status Code: " + response.getStatusCode());
+	    log.info("Response Payload: " + response.getBody().asString());
+	    sessionId = response.body().jsonPath().getString("session");
 	    log.info("sessionId from session start: " + sessionId);
 	    
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
