@@ -112,6 +112,17 @@ pipeline {
                 // Debug
                 sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
                 
+                // update CTP with yaml script upload
+                sh """
+                    # upload yaml file to CTP
+                    curl -X 'PUT' \
+                        -u ${ctp_user}:${ctp_pass} \
+                        '${ctp_url}/em/api/v3/environments/${ctp_envId}/config' \
+                        -H 'accept: application/json' \
+                        -H 'Content-Type: application/json' \
+                        -d @./petclinic-jenkins/petclinic-docker/ctp.json
+                    """
+
                 // Prepare the jtestcli.properties file
                 sh '''
                     # Set Up and write .properties file
@@ -300,7 +311,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -321,22 +332,12 @@ pipeline {
                     curl -iv --raw http://localhost:8052/status
                     curl -iv --raw http://localhost:8053/status
                     '''
-                // update CTP with yaml script upload
-                sh """
-                    # upload yaml file to CTP
-                    curl -X 'PUT' \
-                        -u ${ctp_user}:${ctp_pass} \
-                        '${ctp_url}/em/api/v3/environments/${ctp_envId}/config' \
-                        -H 'accept: application/json' \
-                        -H 'Content-Type: application/json' \
-                        -d @./petclinic-jenkins/petclinic-docker/ctp.json
-                    """
             }
         }
         stage('Functional Test') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
