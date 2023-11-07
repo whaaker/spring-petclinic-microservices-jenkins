@@ -39,7 +39,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 	    Response response = RestAssured.with().contentType(ContentType.JSON).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/session/start");
 	    ResponseBody responseBody = response.body(); 
 	    log.info("Starting session with CTP"); // logging
-	    log.info(responseBody.prettyPrint()); // logging
+	    responseBody.prettyPeek(); // logging
 	    sessionId = responseBody.jsonPath().getString("session");
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 		log.info("sessionId: " + sessionId);
@@ -51,7 +51,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 		
 		Response response = RestAssured.with().contentType(ContentType.JSON).body("{\"test\":\"" + testId + "\"}").post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/test/start");
 		log.info("Starting test"); // logging
-	    log.info(response.body().prettyPrint()); // logging
+	    response.body().prettyPeek(); // logging
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 		
 		Response response = RestAssured.with().contentType(ContentType.JSON).body(bodyBuilder.toString()).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/test/stop");
 	    log.info("Stopping test - passed"); // logging
-	    log.info(response.body().prettyPrint()); // logging
+	    response.body().prettyPeek(); // logging
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 		
 		Response response = RestAssured.with().contentType(ContentType.JSON).body(bodyBuilder.toString()).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/test/stop");
 	    log.info("Stopping test - failed"); // logging
-	    log.info(response.body().prettyPrint()); // logging
+	    response.body().prettyPeek(); // logging
 	}
 	
 	private static String getTestId(ExtensionContext context) {
@@ -95,7 +95,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 		public void run() {
 			Response response1 = RestAssured.with().contentType(ContentType.JSON).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/session/stop");
 		    log.info("Stopping session"); // logging
-		    log.info(response1.body().prettyPrint()); // logging
+		    response1.body().prettyPeek(); // logging
 			
 			StringBuilder bodyBuilder = new StringBuilder();
 			bodyBuilder.append('{');
@@ -106,7 +106,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 			
 			Response response2 = RestAssured.with().contentType(ContentType.JSON).body(bodyBuilder.toString()).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/" + sessionId);
 			log.info("Publishing to DTP - POST v3/environments/{envId}/coverage/"+sessionId); // logging
-		    log.info(response2.body().prettyPrint()); // logging
+		    response2.body().prettyPeek(); // logging
 		}
 	}
 }
