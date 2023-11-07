@@ -32,7 +32,6 @@ pipeline {
         dtp_user="${PARASOFT_DTP_USER}" //admin
         dtp_pass="${PARASOFT_DTP_PASS}"
         dtp_publish="${PARASOFT_DTP_PUBLISH}" //false
-        buildId="${app_short}-${BUILD_TIMESTAMP}" //do it dynamically instead
         
         // Parasoft Jtest Settings
         jtestSAConfig="jtest.builtin://Recommended Rules"
@@ -155,7 +154,6 @@ pipeline {
                     scontrol.rep1.git.workspace=/home/parasoft/jenkins/petclinic
                     scontrol.rep1.type=git
 
-                    build.id=${buildId}
                     session.tag=${jtestSessionTag}
                     dtp.url=${dtp_url}
                     dtp.user=${dtp_user}
@@ -193,6 +191,7 @@ pipeline {
                     -Djtest.config='${jtestSAConfig}' \
                     -Djtest.report=./target/jtest/sa \
                     -Djtest.showSettings=true \
+                    -Djtest.build.id=${app_short}-${BUILD_TIMESTAMP} \
                     -Dproperty.dtp.project=${project_name} \
                     "
                     '''
@@ -245,6 +244,7 @@ pipeline {
                     -Djtest.config='builtin://Unit Tests' \
                     -Djtest.report=./target/jtest/ut \
                     -Djtest.showSettings=true \
+                    -Djtest.build.id=${app_short}-${BUILD_TIMESTAMP} \
                     -Dproperty.dtp.project=${project_name} \
                     -Dproperty.report.coverage.images=${unitCovImage} \
                     "
