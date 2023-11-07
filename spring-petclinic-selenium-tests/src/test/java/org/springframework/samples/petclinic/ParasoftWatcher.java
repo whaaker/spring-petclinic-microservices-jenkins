@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 
-	private static final String CTP_BASE_URL = "http://54.187.104.213:8080";
+	private static final String CTP_BASE_URL = "http://54.190.117.79:8080";
 	private static final String CTP_USER = "demo";
 	private static final String CTP_PASS = "demo-user";
 	private static final String CTP_ENV_ID = "32";
