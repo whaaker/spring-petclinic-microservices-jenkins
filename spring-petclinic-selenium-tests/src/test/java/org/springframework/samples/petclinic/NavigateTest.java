@@ -49,9 +49,9 @@ class NavigateTest {
 //        opts.addArguments("--disable-gpu");
 //        opts.addArguments("--no-sandbox");
 		
-		driver = new RemoteWebDriver(url, opts, false);
+//		driver = new RemoteWebDriver(url, opts, false);
 		
-//		driver = new ChromeDriver(opts);
+		driver = new ChromeDriver(opts);
 	}
 	
 	@AfterAll

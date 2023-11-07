@@ -266,7 +266,7 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -314,7 +314,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -340,7 +340,7 @@ pipeline {
         stage('Functional Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -370,6 +370,7 @@ pipeline {
                     -DCTP_PASS=${ctp_pass} \
                     -DCTP_ENV_ID=${ctp_envId} \
                     -DGRID_URL="http://selenium-chrome:4444/wd/hub" \
+                    -DTEST_SESSION_TAG="${jtestSessionTag}" \
                     "
                     '''
 
