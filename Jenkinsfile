@@ -350,7 +350,7 @@ pipeline {
                     --user ${jenkins_uid}:${jenkins_gid} \
                     --name selenium-chrome \
                     --network demo-net \
-                    selenium/standalone-chrome:latest
+                    selenium/standalone-chrome:118.0
                     '''
                 
                 // Run Selenic prepped for web functional testing from docker
