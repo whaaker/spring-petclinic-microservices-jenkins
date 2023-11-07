@@ -355,6 +355,8 @@ pipeline {
                     --user ${jenkins_uid}:${jenkins_gid} \
                     --name selenium-chrome \
                     --network demo-net \
+                    -p 4444:4444 \
+                    -p 7900:7900 \
                     selenium/standalone-chrome:latest;
                     sleep 10s;
                     '''
