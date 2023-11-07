@@ -1,6 +1,9 @@
 pipeline {
     agent any
     environment {
+        // Public IP
+        publicIP = sh(script: 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
+        
         // App Settings
         project_name="PetClinic-Jenkins" //DTP Root Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
@@ -73,16 +76,13 @@ pipeline {
 
                 // Update CTP JSON in local workspace
                 script {
-                    // Retrieve IP address of EC2 instance (i.e., Jenkins server)
-                    def jenkinsIPAddress = sh(script: 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
-
                     // Read in ctp.json file
                     def jsonFilePath = "${env.WORKSPACE}/petclinic-jenkins/petclinic-docker/ctp.json"
                     def jsonFile = readFile(jsonFilePath)
                     def json = new groovy.json.JsonSlurperClassic().parseText(jsonFile)
 
                     // debug
-                    //echo "${jenkinsIPAddress}"
+                    //echo "${publicIP}"
                     //echo "${jsonFilePath}"
                     //echo "${json}"
 
@@ -95,8 +95,8 @@ pipeline {
                             def url = new URL(matchingComponent.instances[0].coverage.agentUrl)
                             def originalPort = url.port
                             
-                            // Combine jenkinsIPAddress with the original port
-                            matchingComponent.instances[0].coverage.agentUrl = "http://${jenkinsIPAddress}:${originalPort}"
+                            // Combine publicIP with the original port
+                            matchingComponent.instances[0].coverage.agentUrl = "http://${publicIP}:${originalPort}"
                             matchingComponent.instances[0].coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
                             matchingComponent.instances[0].coverage.coverageImages = "${functionalCovImage}"
                         } else {
@@ -353,26 +353,39 @@ pipeline {
                     selenium/standalone-chrome:118.0
                     '''
                 
-                // Run Selenic prepped for web functional testing from docker
-                sh  '''
-                    docker run -u ${jenkins_uid}:${jenkins_gid} \
-                    --rm -i --name selenic \
-                    --network demo-net \
-                    -v "$PWD/petclinic-jenkins/spring-petclinic-selenium-tests:/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
-                    -w "/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
-                    pteodor/selenic:7.0 sh -c " \
-                    
-                    # Run Selenium tests, passing in System variables into the test
-                    mvn test \
-                    -DPETCLINIC_BASE_URL="http://api-gateway:8080" \
+                // Run Selenium tests from Jenkins host (assumes Maven & Java installed)
+                sh """
+                    cd petclinic-jenkins/spring-petclinic-selenium-tests;
+                    mvn clean test \
+                    -DGRID_URL="http://localhost:4444/wd/hub" \
+                    -DPETCLINIC_BASE_URL="http://localhost:8099" \
                     -DCTP_BASE_URL="${ctp_url}" \
                     -DCTP_USER=${ctp_user} \
                     -DCTP_PASS=${ctp_pass} \
                     -DCTP_ENV_ID=${ctp_envId} \
-                    -DGRID_URL="http://selenium-chrome:4444/wd/hub" \
-                    -DTEST_SESSION_TAG="${jtestSessionTag}" \
-                    "
-                    '''
+                    -DTEST_SESSION_TAG="${jtestSessionTag}
+                    """
+
+                // Run Selenic prepped for web functional testing from docker
+                // sh  '''
+                //     docker run -u ${jenkins_uid}:${jenkins_gid} \
+                //     --rm -i --name selenic \
+                //     --network demo-net \
+                //     -v "$PWD/petclinic-jenkins/spring-petclinic-selenium-tests:/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
+                //     -w "/home/parasoft/jenkins/petclinic-jenkins/spring-petclinic-selenium-tests" \
+                //     pteodor/selenic:7.0 sh -c " \
+                    
+                //     # Run Selenium tests, passing in System variables into the test
+                //     mvn test \
+                //     -DPETCLINIC_BASE_URL="http://api-gateway:8080" \
+                //     -DCTP_BASE_URL="${ctp_url}" \
+                //     -DCTP_USER=${ctp_user} \
+                //     -DCTP_PASS=${ctp_pass} \
+                //     -DCTP_ENV_ID=${ctp_envId} \
+                //     -DGRID_URL="http://selenium-chrome:4444/wd/hub" \
+                //     -DTEST_SESSION_TAG="${jtestSessionTag}" \
+                //     "
+                //     '''
 
                 // Run functional tests
                 sh  '''
