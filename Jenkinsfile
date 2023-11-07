@@ -270,7 +270,7 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
