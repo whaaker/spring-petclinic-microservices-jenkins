@@ -312,7 +312,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
