@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools {
+        maven 'maven'
+        jdk 'JDK 17'
+    }
     environment {
         // Public IP
         publicIP = sh(script: 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
@@ -294,6 +298,7 @@ pipeline {
                             -Dmaven.test.skip=true \
                             -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
+                            -Djtest.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
                             -Dproperty.dtp.project='''+dir+''' \
                             -Dproperty.report.coverage.images=${functionalCovImage} \
                             "
@@ -350,7 +355,8 @@ pipeline {
                     --user ${jenkins_uid}:${jenkins_gid} \
                     --name selenium-chrome \
                     --network demo-net \
-                    selenium/standalone-chrome:118.0
+                    selenium/standalone-chrome:latest;
+                    sleep 10s;
                     '''
                 
                 // Run Selenium tests from Jenkins host (assumes Maven & Java installed)
