@@ -136,7 +136,7 @@ pipeline {
                     license.network.use.specified.server=true
                     license.network.auth.enabled=true
                     #license.network.url=${ls_url}
-                    license.network.url="https\://35.92.154.15:8443"
+                    license.network.url="https\\://35.92.154.15:8443"
                     license.network.user=${ls_user}
                     license.network.password=${ls_pass}
 
