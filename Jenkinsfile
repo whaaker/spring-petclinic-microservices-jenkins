@@ -250,7 +250,7 @@ pipeline {
                             -Djtest.showSettings=true \
                             -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
                             -Dproperty.dtp.project="'''+dir+'''" \
-                            -Dproperty.report.coverage.images="${covImageTags}" \
+                            -Dproperty.report.coverage.images="'''+covImageTags+'''" \
                             "
                         '''
                     }
