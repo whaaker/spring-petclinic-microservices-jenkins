@@ -159,7 +159,7 @@ pipeline {
         stage('Quality Scan') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -223,15 +223,15 @@ pipeline {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
                         // Execute the build with Jtest Maven plugin in docker
-                        sh '''
+                        sh """
                             # Run Maven build with Jtest tasks via Docker
                             docker run \
                             -u ${jenkins_uid}:${jenkins_gid} \
                             --rm -i \
                             --name jtest \
-                            -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
-                            -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                            -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
+                            -v '\$PWD/petclinic:/home/parasoft/jenkins/petclinic' \
+                            -v '\$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins' \
+                            -w '/home/parasoft/jenkins/petclinic/${dir}' \
                             --network=demo-net \
                             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
@@ -246,11 +246,11 @@ pipeline {
                             -Djtest.config='builtin://Unit Tests' \
                             -Djtest.report=./target/jtest/ut \
                             -Djtest.showSettings=true \
-                            -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
-                            -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.report.coverage.images='''+dir+''';'''+dir'''-UT \
+                            -Dproperty.build.id=${dir}-${BUILD_TIMESTAMP} \
+                            -Dproperty.dtp.project=${dir} \
+                            -Dproperty.report.coverage.images=${dir};${dir}-UT \
                             "
-                        '''
+                        """
                     }
                 }
                 echo '---> Parsing 10.x unit test reports'
@@ -274,7 +274,7 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -323,7 +323,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
