@@ -223,7 +223,7 @@ pipeline {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
                         def buildId = "${dir}-${BUILD_TIMESTAMP}"
-                        def covImageTags = "${dir}\;${dir}-UT";
+                        def covImageTags = "${dir}\\;${dir}-UT";
                         
                         // Execute the build with Jtest Maven plugin in docker
                         sh '''
