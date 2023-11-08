@@ -36,12 +36,6 @@ pipeline {
         // Parasoft Jtest Settings
         jtestSAConfig="jtest.builtin://Recommended Rules"
         jtestSessionTag="PetClinicJenkins-Jtest"
-        //unitCovImage="PetClinic_All;PetClinic_UnitTest"
-        unitCovImage="petclinic-jenkins"
-
-        // Functional Test Settings
-        //functionalCovImage="PetClinic_All;PetClinic_Selenium"
-        functionalCovImage="petclinic-jenkins"
     }
     stages {
         stage('Setup') {
@@ -101,7 +95,7 @@ pipeline {
                             // Combine publicIP with the original port
                             matchingComponent.instances[0].coverage.agentUrl = "http://${publicIP}:${originalPort}"
                             matchingComponent.instances[0].coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
-                            matchingComponent.instances[0].coverage.coverageImages = "${dir}"
+                            matchingComponent.instances[0].coverage.coverageImages = "${dir};${dir}-FT"
                         } else {
                             echo "Something is NULL!"
                         }
@@ -254,7 +248,7 @@ pipeline {
                             -Djtest.showSettings=true \
                             -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
                             -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.report.coverage.images='''+dir+''' \
+                            -Dproperty.report.coverage.images='''+dir+''';'''+dir'''-UT \
                             "
                         '''
                     }
@@ -310,7 +304,7 @@ pipeline {
                             -Djtest.showSettings=true \
                             -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
                             -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.report.coverage.images='''+dir+''' \
+                            -Dproperty.report.coverage.images='''+dir+''';'''+dir+'''-FT \
                             "
 
                             # check petclinic/target permissions
@@ -454,8 +448,8 @@ pipeline {
         // Clean after build
         always {
             sh '''
-                docker container stop selenium-chrome;
-                docker container rm selenium-chrome;
+                #docker container stop selenium-chrome;
+                #docker container rm selenium-chrome;
                 #sleep 10s;
                 #docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml down || true;
                 #sleep 10s;
