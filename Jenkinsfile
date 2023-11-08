@@ -43,7 +43,7 @@ pipeline {
                 deleteDir()
 
                 // setup the workspace
-                sh  '''
+                sh  """
                     # Clone this repository & PetClinic repository into the workspace
                     mkdir petclinic-jenkins;
                     git clone https://github.com/whaaker/spring-petclinic-microservices-jenkins.git petclinic-jenkins;
@@ -58,7 +58,7 @@ pipeline {
                     # Debugging
                     pwd;
                     tree .;
-                '''
+                """
 
                 // add agent.jar into all microservices projects
                 script {
@@ -123,7 +123,7 @@ pipeline {
                 """
 
                 // Prepare the jtestcli.properties file
-                sh '''
+                sh """
                     # Set Up and write .properties file
                     echo $"
                     parasoft.eula.accepted=true
@@ -153,7 +153,7 @@ pipeline {
                     dtp.user=${dtp_user}
                     dtp.password=${dtp_pass}
                     report.dtp.publish=${dtp_publish}" > ./petclinic-jenkins/jtest/jtestcli.properties
-                '''
+                """
             }
         }
         stage('Quality Scan') {
@@ -166,6 +166,15 @@ pipeline {
                 script {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
+                        // Setup stage-specific additional settings
+                        sh """
+                            # Set Up and write .properties file
+                            echo $"
+                            dtp.project=${dir}
+                            build.id=${dir}-${BUILD_TIMESTAMP}
+                            report.coverage.images=${dir};${dir}-UT
+                            " > ./petclinic-jenkins/jtest/jtestcli-sa.properties
+                        """
                         // Execute the build with Jtest Maven plugin in docker        
                         sh '''
                             # Run Maven build with Jtest tasks via Docker
@@ -188,8 +197,6 @@ pipeline {
                             -Djtest.config='${jtestSAConfig}' \
                             -Djtest.report=./target/jtest/sa \
                             -Djtest.showSettings=true \
-                            -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
-                            -Dproperty.dtp.project='''+dir+''' \
                             "
                         '''
                     }
@@ -222,9 +229,15 @@ pipeline {
                 script {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
-                        def buildId = "${dir}-${BUILD_TIMESTAMP}"
-                        def covImageTags = "${dir}\\;${dir}-UT";
-                        
+                        // Setup stage-specific additional settings
+                        sh """
+                            # Set Up and write .properties file
+                            echo $"
+                            dtp.project=${dir}
+                            build.id=${dir}-${BUILD_TIMESTAMP}
+                            report.coverage.images=${dir};${dir}-UT
+                            " > ./petclinic-jenkins/jtest/jtestcli-ut.properties
+                        """
                         // Execute the build with Jtest Maven plugin in docker
                         sh '''
                             # Run Maven build with Jtest tasks via Docker
@@ -249,9 +262,6 @@ pipeline {
                             -Djtest.config="builtin://Unit Tests" \
                             -Djtest.report=./target/jtest/ut \
                             -Djtest.showSettings=true \
-                            -Dproperty.build.id='''+buildId+''' \
-                            -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.report.coverage.images='''+covImageTags+''' \
                             "
                         '''
                     }
@@ -277,13 +287,22 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
                 script {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
+                        // Setup stage-specific additional settings
+                        sh """
+                            # Set Up and write .properties file
+                            echo $"
+                            dtp.project=${dir}
+                            build.id=${dir}-${BUILD_TIMESTAMP}
+                            report.coverage.images=${dir};${dir}-FT
+                            " > ./petclinic-jenkins/jtest/jtestcli-ft.properties
+                        """
                         // Execute the build with Jtest Maven plugin in docker
                         sh '''
                             echo "dir is: '''+dir+'''"
@@ -305,9 +324,6 @@ pipeline {
                             -Dmaven.test.skip=true \
                             -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
-                            -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
-                            -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.report.coverage.images='''+dir+''';'''+dir+'''-FT \
                             "
 
                             # check petclinic/target permissions
