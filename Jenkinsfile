@@ -101,7 +101,7 @@ pipeline {
                             // Combine publicIP with the original port
                             matchingComponent.instances[0].coverage.agentUrl = "http://${publicIP}:${originalPort}"
                             matchingComponent.instances[0].coverage.buildId = "${dir}-${BUILD_TIMESTAMP}"
-                            matchingComponent.instances[0].coverage.coverageImages = "${functionalCovImage}"
+                            matchingComponent.instances[0].coverage.coverageImages = "${dir}"
                         } else {
                             echo "Something is NULL!"
                         }
@@ -300,7 +300,7 @@ pipeline {
                             -Djtest.showSettings=true \
                             -Djtest.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
                             -Dproperty.dtp.project='''+dir+''' \
-                            -Dproperty.report.coverage.images=${functionalCovImage} \
+                            -Dproperty.report.coverage.images='''+dir+''' \
                             "
 
                             # check petclinic/target permissions
