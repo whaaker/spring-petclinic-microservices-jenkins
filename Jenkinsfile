@@ -204,7 +204,7 @@ pipeline {
                 recordIssues(
                     tools: [parasoftFindings(
                         localSettingsPath: '$PWD/petclinic-jenkins/jtest/jtestcli.properties',
-                        pattern: '**/target/jtest/sa/*.xml'
+                        pattern: '**/target/jtest/sa/*report*.xml'
                     )],
                     unhealthy: 100, // Adjust as needed
                     healthy: 50,   // Adjust as needed
@@ -269,7 +269,7 @@ pipeline {
                         tools: [[$class: 'ParasoftType', 
                             deleteOutputFiles: true, 
                             failIfNotNew: false, 
-                            pattern: '**/target/jtest/ut/*.xml', 
+                            pattern: '**/target/jtest/ut/*report*.xml', 
                             skipNoTestFiles: true, 
                             stopProcessingIfError: false
                         ]]
