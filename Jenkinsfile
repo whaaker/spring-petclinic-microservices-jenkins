@@ -126,7 +126,7 @@ pipeline {
                         -H 'accept: application/json' \
                         -H 'Content-Type: application/json' \
                         -d @./petclinic-jenkins/petclinic-docker/ctp.json
-                    """
+                """
 
                 // Prepare the jtestcli.properties file
                 sh '''
@@ -159,42 +159,47 @@ pipeline {
                     dtp.user=${dtp_user}
                     dtp.password=${dtp_pass}
                     report.dtp.publish=${dtp_publish}" > ./petclinic-jenkins/jtest/jtestcli.properties
-                    '''
+                '''
             }
         }
         stage('Quality Scan') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
-                // Execute the build with Jtest Maven plugin in docker        
-                sh '''
-                    # Run Maven build with Jtest tasks via Docker
-                    docker run \
-                    -u ${jenkins_uid}:${jenkins_gid} \
-                    --rm -i \
-                    --name jtest \
-                    -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
-                    -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                    -w "/home/parasoft/jenkins/petclinic" \
-                    --network=demo-net \
-                    $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
+                script {
+                    def servicesArray = services_list.split(',')
+                    for (def dir in servicesArray) {
+                        // Execute the build with Jtest Maven plugin in docker        
+                        sh '''
+                            # Run Maven build with Jtest tasks via Docker
+                            docker run \
+                            -u ${jenkins_uid}:${jenkins_gid} \
+                            --rm -i \
+                            --name jtest \
+                            -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                            -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                            -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
+                            --network=demo-net \
+                            $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
-                    # Compile the project and run Jtest Static Analysis
-                    mvn compile \
-                    jtest:jtest \
-                    -DskipTests=true \
-                    -s /home/parasoft/.m2/settings.xml \
-                    -Djtest.settings='../petclinic-jenkins/jtest/jtestcli.properties' \
-                    -Djtest.config='${jtestSAConfig}' \
-                    -Djtest.report=./target/jtest/sa \
-                    -Djtest.showSettings=true \
-                    -Dproperty.build.id=${app_short}-${BUILD_TIMESTAMP} \
-                    -Dproperty.dtp.project=${project_name} \
-                    "
-                    '''
+                            # Compile the project and run Jtest Static Analysis
+                            mvn compile \
+                            jtest:jtest \
+                            -DskipTests=true \
+                            -s /home/parasoft/.m2/settings.xml \
+                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli.properties' \
+                            -Djtest.config='${jtestSAConfig}' \
+                            -Djtest.report=./target/jtest/sa \
+                            -Djtest.showSettings=true \
+                            -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
+                            -Dproperty.dtp.project='''+dir+''' \
+                            "
+                        '''
+                    }
+                }
                 echo '---> Parsing 10.x static analysis reports'
                 recordIssues(
                     tools: [parasoftFindings(
@@ -216,39 +221,44 @@ pipeline {
         stage('Unit Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
-                // Execute the build with Jtest Maven plugin in docker
-                sh '''
-                    # Run Maven build with Jtest tasks via Docker
-                    docker run \
-                    -u ${jenkins_uid}:${jenkins_gid} \
-                    --rm -i \
-                    --name jtest \
-                    -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
-                    -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                    -w "/home/parasoft/jenkins/petclinic" \
-                    --network=demo-net \
-                    $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
+                script {
+                    def servicesArray = services_list.split(',')
+                    for (def dir in servicesArray) {
+                        // Execute the build with Jtest Maven plugin in docker
+                        sh '''
+                            # Run Maven build with Jtest tasks via Docker
+                            docker run \
+                            -u ${jenkins_uid}:${jenkins_gid} \
+                            --rm -i \
+                            --name jtest \
+                            -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                            -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                            -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
+                            --network=demo-net \
+                            $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
-                    # Compile the test sources and run unit tests with Jtest
-                    mvn test-compile \
-                    jtest:agent \
-                    test \
-                    jtest:jtest \
-                    -s /home/parasoft/.m2/settings.xml \
-                    -Dmaven.test.failure.ignore=true \
-                    -Djtest.settings='../petclinic-jenkins/jtest/jtestcli.properties' \
-                    -Djtest.config='builtin://Unit Tests' \
-                    -Djtest.report=./target/jtest/ut \
-                    -Djtest.showSettings=true \
-                    -Dproperty.build.id=${app_short}-${BUILD_TIMESTAMP} \
-                    -Dproperty.dtp.project=${project_name} \
-                    -Dproperty.report.coverage.images=${unitCovImage} \
-                    "
-                    '''
+                            # Compile the test sources and run unit tests with Jtest
+                            mvn test-compile \
+                            jtest:agent \
+                            test \
+                            jtest:jtest \
+                            -s /home/parasoft/.m2/settings.xml \
+                            -Dmaven.test.failure.ignore=true \
+                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli.properties' \
+                            -Djtest.config='builtin://Unit Tests' \
+                            -Djtest.report=./target/jtest/ut \
+                            -Djtest.showSettings=true \
+                            -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
+                            -Dproperty.dtp.project='''+dir+''' \
+                            -Dproperty.report.coverage.images='''+dir+''' \
+                            "
+                        '''
+                    }
+                }
                 echo '---> Parsing 10.x unit test reports'
                 script {
                     step([$class: 'XUnitPublisher', 
@@ -311,7 +321,7 @@ pipeline {
                             #unzip -q ./petclinic/'''+dir+'''/target/jtest/monitor/monitor.zip -d .
                             #ls -ll
                             #ls -ll monitor
-                            '''
+                        '''
                     }
                 }
             }
@@ -332,14 +342,14 @@ pipeline {
                     
                     docker-compose -f ./petclinic-jenkins/petclinic-docker/docker-compose-coverage.yml up -d;
                     sleep 80s;
-                    '''
+                '''
                 // Health check coverage agents
                 sh '''
                     curl -iv --raw http://localhost:8050/status
                     curl -iv --raw http://localhost:8051/status
                     curl -iv --raw http://localhost:8052/status
                     curl -iv --raw http://localhost:8053/status
-                    '''
+                '''
             }
         }
         stage('Functional Test') {
@@ -360,7 +370,7 @@ pipeline {
                     selenium/standalone-chrome:latest;
 
                     sleep 5s;
-                    '''
+                '''
                 
                 // Run Selenium tests from Jenkins host (assumes Maven & Java installed)
                 sh """
@@ -373,7 +383,7 @@ pipeline {
                     -DCTP_PASS=${ctp_pass} \
                     -DCTP_ENV_ID=${ctp_envId} \
                     -DTEST_SESSION_TAG=${jtestSessionTag}
-                    """
+                """
 
                 // Run Selenic prepped for web functional testing from docker
                 // sh  '''
@@ -394,7 +404,7 @@ pipeline {
                 //     -DGRID_URL="http://selenium-chrome:4444/wd/hub" \
                 //     -DTEST_SESSION_TAG="${jtestSessionTag}" \
                 //     "
-                //     '''
+                // '''
 
                 // Run functional tests
                 sh  '''
@@ -408,7 +418,7 @@ pipeline {
                     #        - SOAtest web functional test
                     #        - Calling CTP REST APIs as Setup/Teardown
                     #        - Using docker image with browser installed
-                    '''
+                '''
                 
                 // echo '---> Parsing 9.x soatest reports'
                 // script {
