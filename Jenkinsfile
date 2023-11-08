@@ -171,7 +171,7 @@ pipeline {
                             # Set Up and write .properties file
                             echo $"
                             dtp.project='''+dir+'''
-                            build.id='''+dir+'''${BUILD_TIMESTAMP}
+                            build.id='''+dir+'''-${BUILD_TIMESTAMP}
                             report.coverage.images='''+dir+''';'''+dir+'''-UT
                             " > ./petclinic-jenkins/jtest/jtestcli-sa.properties
                         '''
@@ -235,7 +235,7 @@ pipeline {
                             # Set Up and write .properties file
                             echo $"
                             dtp.project='''+dir+'''
-                            build.id='''+dir+'''${BUILD_TIMESTAMP}
+                            build.id='''+dir+'''-${BUILD_TIMESTAMP}
                             report.coverage.images='''+dir+''';'''+dir+'''-UT
                             " > ./petclinic-jenkins/jtest/jtestcli-ut.properties
                         '''
@@ -259,9 +259,9 @@ pipeline {
                             jtest:jtest \
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.failure.ignore=true \
-                            -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
-                            -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli-ut.properties" \
-                            -Djtest.config="builtin://Unit Tests" \
+                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli.properties' \
+                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli-ut.properties' \
+                            -Djtest.config='builtin://Unit Tests' \
                             -Djtest.report=./target/jtest/ut \
                             -Djtest.showSettings=true \
                             "
@@ -301,7 +301,7 @@ pipeline {
                             # Set Up and write .properties file
                             echo $"
                             dtp.project='''+dir+'''
-                            build.id='''+dir+'''${BUILD_TIMESTAMP}
+                            build.id='''+dir+'''-${BUILD_TIMESTAMP}
                             report.coverage.images='''+dir+''';'''+dir+'''-FT
                             " > ./petclinic-jenkins/jtest/jtestcli-ft.properties
                         '''
@@ -324,8 +324,8 @@ pipeline {
                             mvn package jtest:monitor \
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.skip=true \
-                            -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
-                            -Djtest.settings="../.../petclinic-jenkins/jtest/jtestcli-ft.properties" \
+                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli.properties' \
+                            -Djtest.settings='../.../petclinic-jenkins/jtest/jtestcli-ft.properties' \
                             -Djtest.showSettings=true \
                             "
 
