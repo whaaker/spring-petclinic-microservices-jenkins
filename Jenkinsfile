@@ -222,9 +222,10 @@ pipeline {
                 script {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
+                        def buildId = "${dir}-${BUILD_TIMESTAMP}"
+                        def covImageTags = "${dir}\;${dir}-UT";
+                        
                         // Execute the build with Jtest Maven plugin in docker
-                        def covImageTags = "${dir};${dir}-UT";
-
                         sh '''
                             # Run Maven build with Jtest tasks via Docker
                             docker run \
@@ -248,9 +249,9 @@ pipeline {
                             -Djtest.config="builtin://Unit Tests" \
                             -Djtest.report=./target/jtest/ut \
                             -Djtest.showSettings=true \
-                            -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
-                            -Dproperty.dtp.project="'''+dir+'''" \
-                            -Dproperty.report.coverage.images="'''+covImageTags+'''" \
+                            -Dproperty.build.id='''+buildId+''' \
+                            -Dproperty.dtp.project='''+dir+''' \
+                            -Dproperty.report.coverage.images='''+covImageTags+''' \
                             "
                         '''
                     }
