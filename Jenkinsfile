@@ -191,7 +191,7 @@ pipeline {
                     -Djtest.config='${jtestSAConfig}' \
                     -Djtest.report=./target/jtest/sa \
                     -Djtest.showSettings=true \
-                    -Djtest.build.id=${app_short}-${BUILD_TIMESTAMP} \
+                    -Dproperty.build.id=${app_short}-${BUILD_TIMESTAMP} \
                     -Dproperty.dtp.project=${project_name} \
                     "
                     '''
@@ -244,7 +244,7 @@ pipeline {
                     -Djtest.config='builtin://Unit Tests' \
                     -Djtest.report=./target/jtest/ut \
                     -Djtest.showSettings=true \
-                    -Djtest.build.id=${app_short}-${BUILD_TIMESTAMP} \
+                    -Dproperty.build.id=${app_short}-${BUILD_TIMESTAMP} \
                     -Dproperty.dtp.project=${project_name} \
                     -Dproperty.report.coverage.images=${unitCovImage} \
                     "
@@ -298,7 +298,7 @@ pipeline {
                             -Dmaven.test.skip=true \
                             -Djtest.settings="../../petclinic-jenkins/jtest/jtestcli.properties" \
                             -Djtest.showSettings=true \
-                            -Djtest.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
+                            -Dproperty.build.id='''+dir+'''-${BUILD_TIMESTAMP} \
                             -Dproperty.dtp.project='''+dir+''' \
                             -Dproperty.report.coverage.images='''+dir+''' \
                             "
