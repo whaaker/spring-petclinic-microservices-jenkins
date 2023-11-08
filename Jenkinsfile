@@ -170,9 +170,9 @@ pipeline {
                         sh '''
                             # Set Up and write .properties file
                             echo $"
-                            dtp.project=${dir}
+                            dtp.project='''+dir+'''
                             build.id=${dir}-${BUILD_TIMESTAMP}
-                            report.coverage.images=${dir};${dir}-UT
+                            report.coverage.images='''+dir+''';'''+dir+'''-UT
                             " > ./petclinic-jenkins/jtest/jtestcli-sa.properties
                         '''
                         // Execute the build with Jtest Maven plugin in docker        
@@ -233,9 +233,9 @@ pipeline {
                         sh '''
                             # Set Up and write .properties file
                             echo $"
-                            dtp.project=${dir}
+                            dtp.project='''+dir+'''
                             build.id=${dir}-${BUILD_TIMESTAMP}
-                            report.coverage.images=${dir};${dir}-UT
+                            report.coverage.images='''+dir+''';'''+dir+'''-UT
                             " > ./petclinic-jenkins/jtest/jtestcli-ut.properties
                         '''
                         // Execute the build with Jtest Maven plugin in docker
@@ -298,9 +298,9 @@ pipeline {
                         sh '''
                             # Set Up and write .properties file
                             echo $"
-                            dtp.project=${dir}
+                            dtp.project='''+dir+'''
                             build.id=${dir}-${BUILD_TIMESTAMP}
-                            report.coverage.images=${dir};${dir}-FT
+                            report.coverage.images='''+dir+''';'''+dir+'''-FT
                             " > ./petclinic-jenkins/jtest/jtestcli-ft.properties
                         '''
                         // Execute the build with Jtest Maven plugin in docker
