@@ -193,8 +193,7 @@ pipeline {
                             jtest:jtest \
                             -DskipTests=true \
                             -s /home/parasoft/.m2/settings.xml \
-                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli.properties' \
-                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli-sa.properties' \
+                            -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-sa.properties' \
                             -Djtest.config='${jtestSAConfig}' \
                             -Djtest.report=./target/jtest/sa \
                             -Djtest.showSettings=true \
@@ -259,8 +258,7 @@ pipeline {
                             jtest:jtest \
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.failure.ignore=true \
-                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli.properties' \
-                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli-ut.properties' \
+                            -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-ut.properties' \
                             -Djtest.config='builtin://Unit Tests' \
                             -Djtest.report=./target/jtest/ut \
                             -Djtest.showSettings=true \
@@ -324,8 +322,7 @@ pipeline {
                             mvn package jtest:monitor \
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.skip=true \
-                            -Djtest.settings='../../petclinic-jenkins/jtest/jtestcli.properties' \
-                            -Djtest.settings='../.../petclinic-jenkins/jtest/jtestcli-ft.properties' \
+                            -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-ft.properties' \
                             -Djtest.showSettings=true \
                             "
 
