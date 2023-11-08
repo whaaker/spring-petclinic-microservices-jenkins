@@ -35,6 +35,7 @@ pipeline {
         
         // Parasoft Jtest Settings
         jtestSAConfig="jtest.builtin://Recommended Rules"
+        jtestUTConfig="jtest.builtin://Unit Tests"
         jtestSessionTag="PetClinicJenkins-Jtest"
     }
     stages {
@@ -122,7 +123,7 @@ pipeline {
                         -d @./petclinic-jenkins/petclinic-docker/ctp.json
                 """
 
-                // Prepare the jtestcli.properties file
+                // Prepare the base jtestcli.properties file
                 sh '''
                     # Set Up and write .properties file
                     echo $"
@@ -259,7 +260,7 @@ pipeline {
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.failure.ignore=true \
                             -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-ut.properties' \
-                            -Djtest.config='builtin://Unit Tests' \
+                            -Djtest.config='${jtestUTConfig}' \
                             -Djtest.report=./target/jtest/ut \
                             -Djtest.showSettings=true \
                             "
