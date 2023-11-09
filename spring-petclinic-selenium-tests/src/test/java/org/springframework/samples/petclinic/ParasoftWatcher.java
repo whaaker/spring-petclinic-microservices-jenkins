@@ -21,13 +21,14 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 	private static final String CTP_ENV_ID = "32";
 	private static final String TEST_SESSION_TAG = "PetClinicJenkins-Jtest";
 	private static final String PUBLISH = "false";
+	private static final String BASELINE_ID = "WilhelmTest";
 	private static String sessionId;
-	private static String baselineId;
 
 	private static final Logger log = LoggerFactory.getLogger(ParasoftWatcher.class);
 
 	static {
 		log.info("Starting session with CTP");
+		log.info("PUBLISH set to: " + System.getProperty("PUBLISH", PUBLISH));
 		
 		URL url = null;
 		try {
@@ -113,8 +114,6 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 		@Override
 		public void run() {
 			log.info("ShutdownHook is called");
-			//baselineId = System.getProperty("baselineId", "latestBaseline");
-			baselineId = "WilhelmTest";
 			RestAssured.with().contentType(ContentType.JSON).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/session/stop");
 			StringBuilder bodyBuilder = new StringBuilder();
 			bodyBuilder.append('{');
@@ -131,8 +130,8 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 				log.info("Response Payload: " + response1.getBody().asString());
 				
 				log.info("Setting this run with baselineId");
-				log.info("Calling... POST /em/api/v3/environments" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + baselineId);
-				Response response2 = RestAssured.with().contentType(ContentType.JSON).body("string").post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + baselineId); 
+				log.info("Calling... POST /em/api/v3/environments" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + System.getProperty("BASELINE_ID", BASELINE_ID));
+				Response response2 = RestAssured.with().contentType(ContentType.JSON).body("string").post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + System.getProperty("BASELINE_ID", BASELINE_ID)); 
 				log.info("Response Status Code: " + response2.getStatusCode());
 				log.info("Response Payload: " + response2.body().asString());
 			}

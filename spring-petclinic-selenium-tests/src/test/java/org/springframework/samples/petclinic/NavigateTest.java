@@ -57,9 +57,9 @@ class NavigateTest {
 		driver.findElement(By.xpath("//a[@class=\"dropdown-toggle\"]")).click();
 		Thread.sleep(1000);
 		driver.findElement(By.xpath("//a[@ui-sref=\"owners\"]")).click();
-		Thread.sleep(6000);
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("//owner-list/table/tbody/tr[1]/td[1]/a")).click();
-		Thread.sleep(3000);
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("//dd/a")).click();
 		Thread.sleep(1000);
 		driver.findElement(By.xpath("//a[@title=\"home page\"]")).click();
