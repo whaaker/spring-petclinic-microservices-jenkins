@@ -388,8 +388,8 @@ pipeline {
                 sh """
                     cd petclinic-jenkins/spring-petclinic-selenium-tests;
                     mvn clean test \
-                    -DGRID_URL=http://localhost:4444/wd/hub \
-                    -DPETCLINIC_BASE_URL=http://localhost:8099 \
+                    -DGRID_URL=http://${public_IP}:4444/wd/hub \
+                    -DPETCLINIC_BASE_URL=http://${public_IP}:8099 \
                     -DCTP_BASE_URL=${ctp_url} \
                     -DCTP_USER=${ctp_user} \
                     -DCTP_PASS=${ctp_pass} \
