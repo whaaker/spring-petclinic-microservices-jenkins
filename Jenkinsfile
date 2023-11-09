@@ -387,7 +387,7 @@ pipeline {
                 '''
                 
                 // Run Selenium tests from Jenkins host (assumes Maven & Java installed)
-                sh '''
+                sh """
                     cd petclinic-jenkins/spring-petclinic-selenium-tests;
                     mvn clean test \
                     -DGRID_URL='http://${publicIP}:4444/wd/hub' \
@@ -397,7 +397,7 @@ pipeline {
                     -DCTP_PASS=${ctp_pass} \
                     -DCTP_ENV_ID=${ctp_envId} \
                     -DTEST_SESSION_TAG=${jtestSessionTag}
-                '''
+                """
 
                 // Run Selenic prepped for web functional testing from docker
                 // sh  '''
