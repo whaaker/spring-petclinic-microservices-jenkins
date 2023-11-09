@@ -369,7 +369,7 @@ pipeline {
         stage('Functional Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
