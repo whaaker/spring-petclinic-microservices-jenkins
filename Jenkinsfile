@@ -9,7 +9,7 @@ pipeline {
         publicIP = sh(script: 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true).trim()
         
         // App Settings
-        project_name="PetClinic-Jenkins" //DTP Root Project
+        project_name="spring-petclinic" //DTP Root Project
         project_repo="https://github.com/parasoft/spring-petclinic-microservices.git" //git repo of project
         app_short="PC" //petclinic
         services_list = "spring-petclinic-api-gateway,spring-petclinic-vets-service,spring-petclinic-visits-service,spring-petclinic-customers-service"
@@ -160,48 +160,82 @@ pipeline {
         stage('Quality Scan') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
                 script {
-                    def servicesArray = services_list.split(',')
-                    for (def dir in servicesArray) {
-                        // Setup stage-specific additional settings
-                        sh '''
-                            # Set Up and write .properties file
-                            echo $"
-                            dtp.project='''+dir+'''
-                            build.id='''+dir+'''-${BUILD_TIMESTAMP}
-                            report.coverage.images='''+dir+''';'''+dir+'''-UT
-                            " > ./petclinic-jenkins/jtest/jtestcli-sa.properties
-                        '''
-                        // Execute the build with Jtest Maven plugin in docker        
-                        sh '''
-                            # Run Maven build with Jtest tasks via Docker
-                            docker run \
-                            -u ${jenkins_uid}:${jenkins_gid} \
-                            --rm -i \
-                            --name jtest \
-                            -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
-                            -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                            -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
-                            --network=demo-net \
-                            $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
+                    // Setup stage-specific additional settings
+                    sh '''
+                        # Set Up and write .properties file
+                        echo $"
+                        dtp.project=${project_name}
+                        build.id=${project_name}-${BUILD_TIMESTAMP}
+                        " > ./petclinic-jenkins/jtest/jtestcli-sa.properties
+                    '''
+                    // Execute the build with Jtest Maven plugin in docker        
+                    sh '''
+                        # Run Maven build with Jtest tasks via Docker
+                        docker run \
+                        -u ${jenkins_uid}:${jenkins_gid} \
+                        --rm -i \
+                        --name jtest \
+                        -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                        -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                        -w "/home/parasoft/jenkins/petclinic" \
+                        --network=demo-net \
+                        $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
-                            # Compile the project and run Jtest Static Analysis
-                            mvn compile \
-                            jtest:jtest \
-                            -DskipTests=true \
-                            -s /home/parasoft/.m2/settings.xml \
-                            -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-sa.properties' \
-                            -Djtest.config='${jtestSAConfig}' \
-                            -Djtest.report=./target/jtest/sa \
-                            -Djtest.showSettings=true \
-                            "
-                        '''
-                    }
+                        # Compile the project and run Jtest Static Analysis
+                        mvn compile \
+                        jtest:jtest \
+                        -DskipTests=true \
+                        -s /home/parasoft/.m2/settings.xml \
+                        -Djtest.settingsList='../petclinic-jenkins/jtest/jtestcli.properties,../petclinic-jenkins/jtest/jtestcli-sa.properties' \
+                        -Djtest.config='${jtestSAConfig}' \
+                        -Djtest.report=./target/jtest/sa \
+                        -Djtest.showSettings=true \
+                        "
+                    '''
                 }
+                // script {
+                //     def servicesArray = services_list.split(',')
+                //     for (def dir in servicesArray) {
+                //         // Setup stage-specific additional settings
+                //         sh '''
+                //             # Set Up and write .properties file
+                //             echo $"
+                //             dtp.project='''+dir+'''
+                //             build.id='''+dir+'''-${BUILD_TIMESTAMP}
+                //             report.coverage.images='''+dir+''';'''+dir+'''-UT
+                //             " > ./petclinic-jenkins/jtest/jtestcli-sa.properties
+                //         '''
+                //         // Execute the build with Jtest Maven plugin in docker        
+                //         sh '''
+                //             # Run Maven build with Jtest tasks via Docker
+                //             docker run \
+                //             -u ${jenkins_uid}:${jenkins_gid} \
+                //             --rm -i \
+                //             --name jtest \
+                //             -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                //             -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                //             -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
+                //             --network=demo-net \
+                //             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
+
+                //             # Compile the project and run Jtest Static Analysis
+                //             mvn compile \
+                //             jtest:jtest \
+                //             -DskipTests=true \
+                //             -s /home/parasoft/.m2/settings.xml \
+                //             -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-sa.properties' \
+                //             -Djtest.config='${jtestSAConfig}' \
+                //             -Djtest.report=./target/jtest/sa \
+                //             -Djtest.showSettings=true \
+                //             "
+                //         '''
+                //     }
+                //}
                 echo '---> Parsing 10.x static analysis reports'
                 recordIssues(
                     tools: [parasoftFindings(
@@ -223,50 +257,87 @@ pipeline {
         stage('Unit Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
                 script {
-                    def servicesArray = services_list.split(',')
-                    for (def dir in servicesArray) {
-                        // Setup stage-specific additional settings
-                        sh '''
-                            # Set Up and write .properties file
-                            echo $"
-                            dtp.project='''+dir+'''
-                            build.id='''+dir+'''-${BUILD_TIMESTAMP}
-                            report.coverage.images='''+dir+''';'''+dir+'''-UT
-                            " > ./petclinic-jenkins/jtest/jtestcli-ut.properties
-                        '''
-                        // Execute the build with Jtest Maven plugin in docker
-                        sh '''
-                            # Run Maven build with Jtest tasks via Docker
-                            docker run \
-                            -u ${jenkins_uid}:${jenkins_gid} \
-                            --rm -i \
-                            --name jtest \
-                            -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
-                            -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                            -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
-                            --network=demo-net \
-                            $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
+                    // Setup stage-specific additional settings
+                    sh '''
+                        # Set Up and write .properties file
+                        echo $"
+                        dtp.project=${project_name}
+                        build.id=${project_name}-${BUILD_TIMESTAMP}
+                        report.coverage.images=${project_name};${project_name}-UT
+                        " > ./petclinic-jenkins/jtest/jtestcli-ut.properties
+                    '''
+                    // Execute the build with Jtest Maven plugin in docker
+                    sh '''
+                        # Run Maven build with Jtest tasks via Docker
+                        docker run \
+                        -u ${jenkins_uid}:${jenkins_gid} \
+                        --rm -i \
+                        --name jtest \
+                        -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                        -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                        -w "/home/parasoft/jenkins/petclinic" \
+                        --network=demo-net \
+                        $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
-                            # Compile the test sources and run unit tests with Jtest
-                            mvn test-compile \
-                            jtest:agent \
-                            test \
-                            jtest:jtest \
-                            -s /home/parasoft/.m2/settings.xml \
-                            -Dmaven.test.failure.ignore=true \
-                            -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-ut.properties' \
-                            -Djtest.config='${jtestUTConfig}' \
-                            -Djtest.report=./target/jtest/ut \
-                            -Djtest.showSettings=true \
-                            "
-                        '''
-                    }
+                        # Compile the test sources and run unit tests with Jtest
+                        mvn test-compile \
+                        jtest:agent \
+                        test \
+                        jtest:jtest \
+                        -s /home/parasoft/.m2/settings.xml \
+                        -Dmaven.test.failure.ignore=true \
+                        -Djtest.settingsList='../petclinic-jenkins/jtest/jtestcli.properties,../petclinic-jenkins/jtest/jtestcli-ut.properties' \
+                        -Djtest.config='${jtestUTConfig}' \
+                        -Djtest.report=./target/jtest/ut \
+                        -Djtest.showSettings=true \
+                        "
+                    '''
                 }
+                // script {
+                //     def servicesArray = services_list.split(',')
+                //     for (def dir in servicesArray) {
+                //         // Setup stage-specific additional settings
+                //         sh '''
+                //             # Set Up and write .properties file
+                //             echo $"
+                //             dtp.project='''+dir+'''
+                //             build.id='''+dir+'''-${BUILD_TIMESTAMP}
+                //             report.coverage.images=${project_name};'''+dir+''';'''+dir+'''-UT
+                //             " > ./petclinic-jenkins/jtest/jtestcli-ut.properties
+                //         '''
+                //         // Execute the build with Jtest Maven plugin in docker
+                //         sh '''
+                //             # Run Maven build with Jtest tasks via Docker
+                //             docker run \
+                //             -u ${jenkins_uid}:${jenkins_gid} \
+                //             --rm -i \
+                //             --name jtest \
+                //             -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
+                //             -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                //             -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
+                //             --network=demo-net \
+                //             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
+
+                //             # Compile the test sources and run unit tests with Jtest
+                //             mvn test-compile \
+                //             jtest:agent \
+                //             test \
+                //             jtest:jtest \
+                //             -s /home/parasoft/.m2/settings.xml \
+                //             -Dmaven.test.failure.ignore=true \
+                //             -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-ut.properties' \
+                //             -Djtest.config='${jtestUTConfig}' \
+                //             -Djtest.report=./target/jtest/ut \
+                //             -Djtest.showSettings=true \
+                //             "
+                //         '''
+                //     }
+                //}
                 echo '---> Parsing 10.x unit test reports'
                 script {
                     step([$class: 'XUnitPublisher', 
