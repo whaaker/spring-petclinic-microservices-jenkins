@@ -369,16 +369,14 @@ pipeline {
         stage('Functional Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
                 // Initialize Selenium Grid to execute Selenic tests
                 sh  '''
                     docker run -d \
-                    --user ${jenkins_uid}:${jenkins_gid} \
                     --name selenium-chrome \
-                    --network demo-net \
                     -p 4444:4444 \
                     -p 7900:7900 \
                     selenium/standalone-chrome:latest;

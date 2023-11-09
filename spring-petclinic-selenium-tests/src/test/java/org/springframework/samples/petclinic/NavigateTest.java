@@ -16,7 +16,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 @ExtendWith(ParasoftWatcher.class)
 class NavigateTest {
 	private static final String PETCLINIC_BASE_URL = "http://18.237.133.64:8099";
-	private static final String GRID_URL = "http://54.201.169.117:4444/wd/hub";
+	private static final String GRID_URL = "http://18.237.133.64:4444/wd/hub";
 	
 	private static RemoteWebDriver driver;
 
