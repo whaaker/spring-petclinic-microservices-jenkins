@@ -363,6 +363,8 @@ pipeline {
                 }
             }
             steps {
+                // I think this part of the requirement is unnecessarily complicated and we should be smarter and more flexible about how
+                // the user must configure the required data
                 script {
                     def servicesArray = services_list.split(',')
                     for (def dir in servicesArray) {
@@ -414,7 +416,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
