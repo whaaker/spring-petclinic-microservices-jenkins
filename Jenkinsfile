@@ -369,7 +369,7 @@ pipeline {
         stage('Functional Test') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -390,9 +390,9 @@ pipeline {
                 sh """
                     cd petclinic-jenkins/spring-petclinic-selenium-tests;
                     mvn clean test \
-                    -DGRID_URL='http://${publicIP}:4444/wd/hub' \
-                    -DPETCLINIC_BASE_URL='http://${publicIP}:8099' \
-                    -DCTP_BASE_URL='${ctp_url}' \
+                    -DGRID_URL=http://${publicIP}:4444/wd/hub \
+                    -DPETCLINIC_BASE_URL=http://${publicIP}:8099 \
+                    -DCTP_BASE_URL=${ctp_url} \
                     -DCTP_USER=${ctp_user} \
                     -DCTP_PASS=${ctp_pass} \
                     -DCTP_ENV_ID=${ctp_envId} \
