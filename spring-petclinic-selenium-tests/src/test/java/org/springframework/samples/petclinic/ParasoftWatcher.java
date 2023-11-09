@@ -20,6 +20,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 	private static final String CTP_PASS = "demo-user";
 	private static final String CTP_ENV_ID = "32";
 	private static final String TEST_SESSION_TAG = "PetClinicJenkins-Jtest";
+	private static final String PUBLISH = "false";
 	private static String sessionId;
 	private static String baselineId;
 
@@ -113,17 +114,20 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 			bodyBuilder.append(',');
 			bodyBuilder.append("\"analysisType\":\"FUNCTIONAL_TEST\"");
 			bodyBuilder.append('}');
-			log.info("Publish coverage and test results to DTP");
-			log.info("Calling... POST /em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/" + sessionId);
-			Response response1 = RestAssured.with().contentType(ContentType.JSON).body(bodyBuilder.toString()).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/" + sessionId) ;
-			log.info("Response Status Code: " + response1.getStatusCode());
-			log.info("Response Payload: " + response1.getBody().asString());
 			
-			log.info("Setting this run with baselineId");
-			log.info("Calling... POST /em/api/v3/environments" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + baselineId);
-			Response response2 = RestAssured.with().contentType(ContentType.JSON).body("string").post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + baselineId); 
-			log.info("Response Status Code: " + response2.getStatusCode());
-			log.info("Response Payload: " + response2.body().asString());
+			if(System.getProperty("PUBLISH", PUBLISH).equals("true")) {
+				log.info("Publish coverage and test results to DTP");
+				log.info("Calling... POST /em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/" + sessionId);
+				Response response1 = RestAssured.with().contentType(ContentType.JSON).body(bodyBuilder.toString()).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/" + sessionId) ;
+				log.info("Response Status Code: " + response1.getStatusCode());
+				log.info("Response Payload: " + response1.getBody().asString());
+				
+				log.info("Setting this run with baselineId");
+				log.info("Calling... POST /em/api/v3/environments" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + baselineId);
+				Response response2 = RestAssured.with().contentType(ContentType.JSON).body("string").post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/coverage/baselines/" + baselineId); 
+				log.info("Response Status Code: " + response2.getStatusCode());
+				log.info("Response Payload: " + response2.body().asString());
+			}
 		}
 	}
 }
