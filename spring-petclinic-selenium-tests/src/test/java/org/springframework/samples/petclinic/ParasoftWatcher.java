@@ -82,6 +82,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 	@Override
 	public void testFailed(ExtensionContext context, Throwable cause) {
 		String testId = getTestId(context);
+		String message = escapeDoubleQuotes(cause.getMessage());
 		log.info("Stopping test (fail): " + testId);
 		StringBuilder bodyBuilder = new StringBuilder();
 		bodyBuilder.append('{');
@@ -89,12 +90,19 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 		bodyBuilder.append(',');
 		bodyBuilder.append("\"result\":\"FAIL\"");
 		bodyBuilder.append(',');
-		bodyBuilder.append("\"message\":\"" + cause.getMessage() + "\"");
+		bodyBuilder.append("\"message\":\"" + message + "\"");
 		bodyBuilder.append('}');
 		log.info("Calling... POST /em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/test/stop");
 		Response response = RestAssured.with().contentType(ContentType.JSON).body(bodyBuilder.toString()).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/test/stop");
 		log.info("Response Status Code: " + response.getStatusCode());
         log.info("Response Payload: " + response.getBody().asString());
+	}
+
+	private String escapeDoubleQuotes(String input) {
+		if (input == null) {
+	        return "";
+	    }
+	    return input.replace("\"", "\\\"");
 	}
 
 	private static String getTestId(ExtensionContext context) {
