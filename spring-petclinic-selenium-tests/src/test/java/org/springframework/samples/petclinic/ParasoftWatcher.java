@@ -20,7 +20,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 	private static final String CTP_PASS = "demo-user";
 	private static final String CTP_ENV_ID = "32";
 	private static final String TEST_SESSION_TAG = "PetClinicJenkins-Jtest";
-	private static final String PUBLISH = "false";
+	private static final String PUBLISH = "true";
 	private static final String BASELINE_ID = "WilhelmTest";
 	private static String sessionId;
 
@@ -113,7 +113,7 @@ public class ParasoftWatcher implements BeforeEachCallback, TestWatcher  {
 	static class ShutdownHook extends Thread {
 		@Override
 		public void run() {
-			log.info("ShutdownHook is called");
+			log.info("Stopping session with CTP");
 			RestAssured.with().contentType(ContentType.JSON).post("em/api/v3/environments/" + System.getProperty("CTP_ENV_ID", CTP_ENV_ID) + "/agents/session/stop");
 			StringBuilder bodyBuilder = new StringBuilder();
 			bodyBuilder.append('{');
