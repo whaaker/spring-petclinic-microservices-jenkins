@@ -149,7 +149,7 @@ pipeline {
         stage('Quality Scan') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -245,7 +245,7 @@ pipeline {
         stage('Unit Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -361,7 +361,7 @@ pipeline {
                             # Set Up and write .properties file
                             echo $"
                             dtp.project='''+dir+'''
-                            build.id='''+dir+'''-${BUILD_TIMESTAMP}-patch
+                            build.id='''+dir+'''-${BUILD_TIMESTAMP}
                             report.coverage.images='''+dir+''';'''+dir+'''-FT
                             " > ./petclinic-jenkins/jtest/jtestcli-ft.properties
                         '''
@@ -404,7 +404,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
