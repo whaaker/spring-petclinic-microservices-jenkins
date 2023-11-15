@@ -131,7 +131,7 @@ pipeline {
                     // Update the value of the specified XML tag
                     //pomXml.properties.find { it.name() == tagName }
                     //    .value = newValue
-                    pomXml.properties[0][tagName][0].value = newValue
+                    pomXml.properties[0].tagName[0].value = newValue
 
                     // debug
                     //echo "${pomXml}"
