@@ -109,6 +109,36 @@ pipeline {
                     writeJSON file: jsonFilePath, json: json, pretty: 4
                 }
 
+                // Update parent pom.xml to re-write docker.image.prefix value
+                script {
+                    // Specify the path to your pom.xml file
+                    def pomFilePath = "${env.WORKSPACE}/petclinic/pom.xml"
+
+                    // Read the pom.xml file using XmlSlurper
+                    def pomXml = new XmlSlurperClassic().parseFile(pomFilePath)
+
+                    // debug
+                    echo "${pomFilePath}"
+                    echo "${pomXml}"
+
+                    // Define the XML tag and new value
+                    def tagName = 'docker.image.prefix'
+                    def newValue = 'parasoft'
+
+                    // Update the value of the specified XML tag
+                    pomXml.properties.find { it.name() == 'properties' }
+                        .children().find { it.name() == tagName }
+                        .value = newValue
+
+                    // debug
+                    echo "${pomXml}"
+
+                    // Write the modified XML back to the file
+                    def xmlString = groovy.xml.XmlUtil.serialize(pomXml)
+                    new File(pomFilePath).text = xmlString
+                }
+
+
                 // Debug
                 sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
 
@@ -149,7 +179,7 @@ pipeline {
         stage('Quality Scan') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -245,7 +275,7 @@ pipeline {
         stage('Unit Test') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -347,7 +377,7 @@ pipeline {
         stage('Package-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
@@ -381,7 +411,7 @@ pipeline {
                             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
                             # Package the application with the Jtest Monitor
-                            mvn package jtest:monitor \
+                            mvn clean install -P buildDocker jtest:monitor \
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.skip=true \
                             -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-ft.properties' \
@@ -404,7 +434,7 @@ pipeline {
         stage('Deploy-CodeCoverage') {
             when {
                 expression {
-                    return true;
+                    return false;
                 }
             }
             steps {
