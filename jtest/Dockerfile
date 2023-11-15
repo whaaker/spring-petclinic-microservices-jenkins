@@ -3,6 +3,7 @@ FROM parasoft/jtest:2023.2
 
 ARG HOST_UID=995
 ARG HOST_GID=991
+ARG DOCKER_GID=992
 
 ## Permissions to create dirs
 USER root
@@ -31,6 +32,8 @@ RUN mkdir -p ${MAVEN_HOME} \
  && rm -f /tmp/apache-maven.tar.gz \
  && ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn \
  && groupmod -g ${HOST_GID} parasoft \
+ && groupadd -g ${DOCKER_GID} docker \
+ && usermod -aG docker parasoft \
  && usermod -u ${HOST_UID} -g ${HOST_GID} parasoft
 
 ENV PATH="${MAVEN_HOME}/bin:${PATH}"

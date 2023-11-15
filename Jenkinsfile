@@ -412,6 +412,8 @@ pipeline {
                             --name jtest \
                             -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
                             -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
+                            -e "DOCKER_HOST='tcp://host.docker.internal:2375'" \
+                            -v "/var/run/docker.sock:/var/run/docker.sock" \
                             -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
                             --network=demo-net \
                             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
