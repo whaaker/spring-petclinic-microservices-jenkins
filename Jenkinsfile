@@ -118,7 +118,7 @@ pipeline {
                     def pomFilePath = "${env.WORKSPACE}/petclinic/pom.xml"
 
                     // Read the pom.xml file using XmlSlurper
-                    def pomXml = new XmlSlurper().parse(pomFilePath)
+                    def pomXml = new XmlParser().parse(pomFilePath)
 
                     // debug
                     echo "${pomFilePath}"
