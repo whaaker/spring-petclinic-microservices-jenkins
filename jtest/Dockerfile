@@ -27,9 +27,6 @@ RUN groupmod -g ${HOST_GID} parasoft \
  && usermod -aG docker parasoft \
  && usermod -u ${HOST_UID} -g ${HOST_GID} parasoft
 
-RUN chown root:docker /var/run/docker.sock \
- && chmod g+rw /var/run/docker.sock
-
 # Install MVN
 ## Set MVN args
 ARG MAVEN_VERSION=3.9.5
@@ -39,11 +36,7 @@ RUN mkdir -p ${MAVEN_HOME} \
  && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
  && tar -xzf /tmp/apache-maven.tar.gz -C ${MAVEN_HOME} --strip-components=1 \
  && rm -f /tmp/apache-maven.tar.gz \
- && ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn \
- && groupmod -g ${HOST_GID} parasoft \
- && groupadd -g ${DOCKER_GID} docker \
- && usermod -aG docker parasoft \
- && usermod -u ${HOST_UID} -g ${HOST_GID} parasoft
+ && ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
 
 ENV PATH="${MAVEN_HOME}/bin:${PATH}"
 
