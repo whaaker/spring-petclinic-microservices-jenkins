@@ -410,6 +410,7 @@ pipeline {
                             -u ${jenkins_uid}:${jenkins_gid} \
                             --rm -i \
                             --name jtest \
+                            --privileged \
                             -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
                             -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
                             -v "/var/run/docker.sock:/var/run/docker.sock" \

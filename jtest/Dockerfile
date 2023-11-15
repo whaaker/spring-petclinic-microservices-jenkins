@@ -21,6 +21,15 @@ ENV JAVA_HOME /opt/java/jdk-17.0.2
 ENV PATH $PATH:$JAVA_HOME/bin
 #RUN update-alternatives --set java ${JAVA_HOME}/bin/java
 
+# Setup Docker permissions
+RUN groupmod -g ${HOST_GID} parasoft \
+ && groupadd -g ${DOCKER_GID} docker \
+ && usermod -aG docker parasoft \
+ && usermod -u ${HOST_UID} -g ${HOST_GID} parasoft
+
+RUN chown root:docker /var/run/docker.sock \
+ && chmod g+rw /var/run/docker.sock
+
 # Install MVN
 ## Set MVN args
 ARG MAVEN_VERSION=3.9.5
