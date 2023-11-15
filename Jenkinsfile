@@ -115,7 +115,7 @@ pipeline {
                     def pomFilePath = "${env.WORKSPACE}/petclinic/pom.xml"
 
                     // Read the pom.xml file using XmlSlurper
-                    def pomXml = new groovy.xml.XmlSlurperClassic().parseFile(pomFilePath)
+                    def pomXml = new XmlParser().parse(pomFilePath)
 
                     // debug
                     echo "${pomFilePath}"
