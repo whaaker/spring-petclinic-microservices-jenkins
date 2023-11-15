@@ -117,10 +117,6 @@ pipeline {
                     // Read the pom.xml file using XmlSlurper
                     def pomXml = new XmlSlurper().parse(pomFilePath)
 
-                    // Find the default namespace
-                    def defaultNamespace = pomXml.namespace().uri
-                    def ns = defaultNamespace ? "${defaultNamespace}:" : ""
-
                     // debug
                     echo "${pomFilePath}"
                     echo "${pomXml}"
@@ -130,7 +126,7 @@ pipeline {
                     def newValue = 'parasoft'
 
                     // Update the value of the specified XML tag
-                    pomXml."${ns}properties".find { it.name() == tagName }
+                    pomXml.properties.find { it.name() == tagName }
                         .value = newValue
 
                     // debug
