@@ -113,35 +113,37 @@ pipeline {
                 sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
 
                 // Update parent pom.xml to re-write docker.image.prefix value to 'parasoft'
-                script {
-                    // Specify the path to your pom.xml file
-                    def pomFilePath = "${env.WORKSPACE}/petclinic/pom.xml"
+                sh 'cp ./petclinic-jenkins/petclinic-docker/pom.xml ./petclinic/pom.xml'
+                
+                // script {
+                //     // Specify the path to your pom.xml file
+                //     def pomFilePath = "${env.WORKSPACE}/petclinic/pom.xml"
 
-                    // Read the pom.xml file using XmlSlurper
-                    def pomXml = new XmlParser().parse(pomFilePath)
+                //     // Read the pom.xml file using XmlSlurper
+                //     def pomXml = new XmlParser().parse(pomFilePath)
 
-                    // debug
-                    echo "${pomFilePath}"
-                    //echo "${pomXml}"
+                //     // debug
+                //     echo "${pomFilePath}"
+                //     //echo "${pomXml}"
 
-                    // Define the XML tag and new value
-                    def tagName = 'docker.image.prefix'
-                    def newValue = 'parasoft'
+                //     // Define the XML tag and new value
+                //     def tagName = 'docker.image.prefix'
+                //     def newValue = 'parasoft'
 
-                    // Update the value of the specified XML tag
-                    //pomXml.properties.find { it.name() == tagName }
-                    //    .value = newValue
-                    pomXml.properties[0][tagName][0].value = newValue
+                //     // Update the value of the specified XML tag
+                //     //pomXml.properties.find { it.name() == tagName }
+                //     //    .value = newValue
+                //     pomXml.properties[0][tagName][0].value = newValue
 
-                    // debug
-                    //echo "${pomXml}"
+                //     // debug
+                //     //echo "${pomXml}"
 
-                    // Write the modified XML back to the file
-                    def xmlString = groovy.xml.XmlUtil.serialize(pomXml)
+                //     // Write the modified XML back to the file
+                //     def xmlString = groovy.xml.XmlUtil.serialize(pomXml)
                     
-                    // Write the XML string to a file
-                    writeFile file: "${env.WORKSPACE}/petclinic/pom.xml", text: xmlString
-                }
+                //     // Write the XML string to a file
+                //     writeFile file: "${env.WORKSPACE}/petclinic/pom.xml", text: xmlString
+                // }
 
                 // Debug
                 sh 'cat ./petclinic/pom.xml'
