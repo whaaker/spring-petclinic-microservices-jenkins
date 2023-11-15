@@ -185,7 +185,7 @@ pipeline {
         stage('Quality Scan') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
@@ -281,7 +281,7 @@ pipeline {
         stage('Unit Test') {
             when {
                 expression {
-                    return false;
+                    return true;
                 }
             }
             steps {
