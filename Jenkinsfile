@@ -115,7 +115,11 @@ pipeline {
                     def pomFilePath = "${env.WORKSPACE}/petclinic/pom.xml"
 
                     // Read the pom.xml file using XmlSlurper
-                    def pomXml = new XmlParser().parse(pomFilePath)
+                    def pomXml = new XmlSlurper().parse(pomFilePath)
+
+                    // Find the namespace
+                    def namespace = pomXml.namespace()
+                    def ns = namespace ? "${namespace}:" : ""
 
                     // debug
                     echo "${pomFilePath}"
@@ -126,7 +130,7 @@ pipeline {
                     def newValue = 'parasoft'
 
                     // Update the value of the specified XML tag
-                    pomXml.properties.find { it.name() == tagName }
+                    pomXml."${ns}properties".find { it.name() == tagName }
                         .value = newValue
 
                     // debug
