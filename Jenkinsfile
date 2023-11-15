@@ -140,7 +140,7 @@ pipeline {
                     def xmlString = groovy.xml.XmlUtil.serialize(pomXml)
                     
                     // Write the XML string to a file
-                    write file: "${env.WORKSPACE}/petclinic/pom.xml", text: xmlString
+                    writeFile file: "${env.WORKSPACE}/petclinic/pom.xml", text: xmlString
                 }
 
                 // Debug
