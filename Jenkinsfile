@@ -410,16 +410,16 @@ pipeline {
                             -u ${jenkins_uid}:${jenkins_gid} \
                             --rm -i \
                             --name jtest \
-                            --privileged \
+                            #--privileged \
                             -v "$PWD/petclinic:/home/parasoft/jenkins/petclinic" \
                             -v "$PWD/petclinic-jenkins:/home/parasoft/jenkins/petclinic-jenkins" \
-                            -v "/var/run/docker.sock:/var/run/docker.sock" \
+                            #-v "/var/run/docker.sock:/var/run/docker.sock" \
                             -w "/home/parasoft/jenkins/petclinic/'''+dir+'''" \
                             --network=demo-net \
                             $(docker build -q ./petclinic-jenkins/jtest) /bin/bash -c " \
 
                             # Package the application with the Jtest Monitor
-                            mvn clean install -P buildDocker jtest:monitor \
+                            mvn package jtest:monitor \
                             -s /home/parasoft/.m2/settings.xml \
                             -Dmaven.test.skip=true \
                             -Djtest.settingsList='../../petclinic-jenkins/jtest/jtestcli.properties,../../petclinic-jenkins/jtest/jtestcli-ft.properties' \

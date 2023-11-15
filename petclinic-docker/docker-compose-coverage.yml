@@ -2,7 +2,7 @@ version: '2'
 
 services:
   config-server:
-    image: springcommunity/spring-petclinic-config-server
+    image: parasoft/spring-petclinic-config-server
     container_name: config-server
     mem_limit: 512M
     networks:
@@ -11,7 +11,7 @@ services:
      - 8888:8888
   
   discovery-server:
-    image: springcommunity/spring-petclinic-discovery-server
+    image: parasoft/spring-petclinic-discovery-server
     container_name: discovery-server
     mem_limit: 512M
     depends_on:
@@ -114,7 +114,7 @@ services:
      - 9411:9411
   
   admin-server:
-    image: springcommunity/spring-petclinic-admin-server
+    image: parasoft/spring-petclinic-admin-server
     container_name: admin-server
     mem_limit: 512M
     depends_on:
