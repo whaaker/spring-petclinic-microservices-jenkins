@@ -57,8 +57,8 @@ pipeline {
                     unzip java_agent_coverage.zip
 
                     # Debugging
-                    pwd;
-                    tree .;
+                    #pwd;
+                    #tree .;
                 '''
 
                 // add agent.jar into all microservices projects
@@ -70,7 +70,7 @@ pipeline {
                 }
 
                 // Debugging
-                sh 'tree ./petclinic'
+                //sh 'tree ./petclinic'
 
                 // Update CTP JSON in local workspace
                 script {
