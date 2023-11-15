@@ -117,9 +117,9 @@ pipeline {
                     // Read the pom.xml file using XmlSlurper
                     def pomXml = new XmlSlurper().parse(pomFilePath)
 
-                    // Find the namespace
-                    def namespace = pomXml.namespace()
-                    def ns = namespace ? "${namespace}:" : ""
+                    // Find the default namespace
+                    def defaultNamespace = pomXml.namespace().uri
+                    def ns = defaultNamespace ? "${defaultNamespace}:" : ""
 
                     // debug
                     echo "${pomFilePath}"
