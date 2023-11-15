@@ -109,7 +109,7 @@ pipeline {
                     writeJSON file: jsonFilePath, json: json, pretty: 4
                 }
 
-                // Update parent pom.xml to re-write docker.image.prefix value
+                // Update parent pom.xml to re-write docker.image.prefix value to 'parasoft'
                 script {
                     // Specify the path to your pom.xml file
                     def pomFilePath = "${env.WORKSPACE}/petclinic/pom.xml"
@@ -126,8 +126,7 @@ pipeline {
                     def newValue = 'parasoft'
 
                     // Update the value of the specified XML tag
-                    pomXml.properties.find { it.name() == 'properties' }
-                        .children().find { it.name() == tagName }
+                    pomXml.properties.find { it.name() == tagName }
                         .value = newValue
 
                     // debug
