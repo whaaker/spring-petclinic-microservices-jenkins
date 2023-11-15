@@ -109,6 +109,9 @@ pipeline {
                     writeJSON file: jsonFilePath, json: json, pretty: 4
                 }
 
+                // Debug
+                sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
+
                 // Update parent pom.xml to re-write docker.image.prefix value to 'parasoft'
                 script {
                     // Specify the path to your pom.xml file
@@ -119,7 +122,7 @@ pipeline {
 
                     // debug
                     echo "${pomFilePath}"
-                    echo "${pomXml}"
+                    //echo "${pomXml}"
 
                     // Define the XML tag and new value
                     def tagName = 'docker.image.prefix'
@@ -131,16 +134,15 @@ pipeline {
                     pomXml.properties[0][tagName][0].value = newValue
 
                     // debug
-                    echo "${pomXml}"
+                    //echo "${pomXml}"
 
                     // Write the modified XML back to the file
                     def xmlString = groovy.xml.XmlUtil.serialize(pomXml)
                     new File(pomFilePath).text = xmlString
                 }
 
-
                 // Debug
-                sh 'cat ./petclinic-jenkins/petclinic-docker/ctp.json'
+                sh 'cat ./petclinic/pom.xml'
 
                 // Prepare the base jtestcli.properties file
                 sh '''
