@@ -445,15 +445,15 @@ pipeline {
             }
             steps {
                 // update CTP with yaml script upload
-                sh """
-                    # upload yaml file to CTP
-                    curl -X 'PUT' \
-                        -u ${ctp_user}:${ctp_pass} \
-                        '${ctp_url}/em/api/v3/environments/${ctp_envId}/config' \
-                        -H 'accept: application/json' \
-                        -H 'Content-Type: application/json' \
-                        -d @./petclinic-jenkins/petclinic-docker/ctp.json
-                """
+                // sh """
+                //     # upload yaml file to CTP
+                //     curl -X 'PUT' \
+                //         -u ${ctp_user}:${ctp_pass} \
+                //         '${ctp_url}/em/api/v3/environments/${ctp_envId}/config' \
+                //         -H 'accept: application/json' \
+                //         -H 'Content-Type: application/json' \
+                //         -d @./petclinic-jenkins/petclinic-docker/ctp.json
+                // """
                 
                 // check running containers and deploy
                 sh '''
